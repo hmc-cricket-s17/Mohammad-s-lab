@@ -1,0 +1,13 @@
+*.class
+*~
+*.obj
+dist/
+build/
+nbproject/private
+nbproject/genfiles.properties
+nbproject/build-impl.xml
+/config.vl
+.DS_Store
+game_options.properties
+
+game-options.xml
