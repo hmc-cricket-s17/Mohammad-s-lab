@@ -2,6 +2,8 @@ package org.open2jam;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import javax.swing.UIManager;
@@ -28,6 +30,8 @@ public class Main implements Runnable
         Config.openDB();
         
         setupLogging();
+        
+        stupOut();
 
         trySetLAF();
         
@@ -46,7 +50,15 @@ public class Main implements Runnable
         for(Handler h : Logger.global.getHandlers())h.setLevel(Level.INFO);
         Logger.global.setLevel(Level.INFO);
     }
-
+    
+    private static void stupOut()
+    {
+        try {
+            PrintWriter out = new PrintWriter("hit_data.txt");
+        } catch (FileNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private static void trySetLAF()
     {
         try {
