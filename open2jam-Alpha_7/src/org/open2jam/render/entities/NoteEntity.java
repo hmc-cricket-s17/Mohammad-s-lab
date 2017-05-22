@@ -112,4 +112,17 @@ public class NoteEntity extends AnimatedEntity implements TimeEntity
     public Event.Channel getChannel() {
         return channel;
     }
+
+    public String getChannelName() {
+        switch(this.channel) {
+		case NOTE_1: return "NOTE_1";
+		case NOTE_2: return "NOTE_2";
+		case NOTE_3: return "NOTE_3";
+		case NOTE_4: return "NOTE_4";
+		case NOTE_5: return "NOTE_5";
+		case NOTE_6: return "NOTE_6";
+		case NOTE_7: return "NOTE_7";
+		default: return "NONE";
+	    }
+        }
 }

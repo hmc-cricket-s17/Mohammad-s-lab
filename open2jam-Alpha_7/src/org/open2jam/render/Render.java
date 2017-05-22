@@ -845,7 +845,7 @@ public class Render implements GameWindowCallback
 
                 // don't continue if the note is too far
                 if(judge.accept(e)) {
-                    Logger.global.log(Level.INFO, String.valueOf(now));
+                    Logger.global.log(Level.INFO, String.valueOf(now).concat(e.getChannelName()));
                     disableAutoSound = false;
                     e.keysound();
                     if(e instanceof LongNoteEntity) {
