@@ -28,24 +28,24 @@
         </sprite>
 
         <sprite id="lifebar_bg">
-            <frame x="77"  y="1"  w="11" h="301" file="main.png" />
+            <frame x="77"  y="1"  w="11" h="301" file="black_BG.png" />
         </sprite>
         <sprite id="lifebar" framespeed="33.3" >
-            <frame x="88"  y="1"  w="11" h="301" file="main.png" />
-            <frame x="99"  y="1"  w="11" h="301" file="main.png" />
-            <frame x="110" y="1"  w="11" h="301" file="main.png" />
-            <frame x="121" y="1"  w="11" h="301" file="main.png" />
-            <frame x="132" y="1"  w="11" h="301" file="main.png" />
-            <frame x="143" y="1"  w="11" h="301" file="main.png" />
-            <frame x="154" y="1"  w="11" h="301" file="main.png" />
-            <frame x="165" y="1"  w="11" h="301" file="main.png" />
-            <frame x="176" y="1"  w="11" h="301" file="main.png" />
-            <frame x="187" y="1"  w="11" h="301" file="main.png" />
+            <frame x="88"  y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="99"  y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="110" y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="121" y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="132" y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="143" y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="154" y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="165" y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="176" y="1"  w="11" h="301" file="black_BG.png" />
+            <frame x="187" y="1"  w="11" h="301" file="black_BG.png" />
         </sprite>
 
 
         <sprite id="timebar">
-            <frame x="0"  y="183"  w="226" h="72" file="font1.png" />
+            <frame x="0"  y="183"  w="226" h="72" file="black_BG.png" />
         </sprite>
 
 
@@ -162,45 +162,45 @@
 
 
         <sprite id="combo_number_0" alpha="true">
-            <frame x="41" y="27" w="46" h="71" file="numbers_1.png" />
+            <frame x="41" y="27" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_1" alpha="true">
-            <frame x="169" y="27" w="46" h="71" file="numbers_1.png" />
+            <frame x="169" y="27" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_2" alpha="true">
-            <frame x="298" y="27" w="46" h="71" file="numbers_1.png" />
+            <frame x="298" y="27" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_3" alpha="true">
-            <frame x="426" y="27" w="46" h="71" file="numbers_1.png" />
+            <frame x="426" y="27" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_4" alpha="true">
-            <frame x="553" y="27" w="46" h="71" file="numbers_1.png" />
+            <frame x="553" y="27" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_5" alpha="true">
-            <frame x="41" y="155" w="46" h="71" file="numbers_1.png" />
+            <frame x="41" y="155" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_6" alpha="true">
-            <frame x="169" y="155" w="46" h="71" file="numbers_1.png" />
+            <frame x="169" y="155" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_7" alpha="true">
-            <frame x="298" y="155" w="46" h="71" file="numbers_1.png" />
+            <frame x="298" y="155" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_8" alpha="true">
-            <frame x="426" y="155" w="46" h="71" file="numbers_1.png" />
+            <frame x="426" y="155" w="46" h="71" file="black_BG.png" />
         </sprite>
         <sprite id="combo_number_9" alpha="true">
-            <frame x="553" y="155" w="46" h="71" file="numbers_1.png" />
+            <frame x="553" y="155" w="46" h="71" file="black_BG.png" />
         </sprite>
 
         <sprite id="combo_title" framespeed="12" alpha="true">
-            <frame x="0"   y="0"  w="64" h="64" file="combo_title.png" />
-            <frame x="64"  y="0"  w="64" h="64" file="combo_title.png" />
-            <frame x="128" y="0"  w="64" h="64" file="combo_title.png" />
-            <frame x="0"   y="64" w="64" h="64" file="combo_title.png" />
-            <frame x="64"  y="64" w="64" h="64" file="combo_title.png" />
-            <frame x="128" y="64" w="64" h="64" file="combo_title.png" />
+            <frame x="0"   y="0"  w="64" h="64" file="black_BG.png" />
+            <frame x="64"  y="0"  w="64" h="64" file="black_BG.png" />
+            <frame x="128" y="0"  w="64" h="64" file="black_BG.png" />
+            <frame x="0"   y="64" w="64" h="64" file="black_BG.png" />
+            <frame x="64"  y="64" w="64" h="64" file="black_BG.png" />
+            <frame x="128" y="64" w="64" h="64" file="black_BG.png" />
         </sprite>
-
+        
         <sprite id="judgment_perfect" alpha="true">
             <frame x="0" y="0" w="128" h="128" file="note_cool_1.png" />
         </sprite>
@@ -219,164 +219,165 @@
 
         <!-- Score numbers are from PointNum.ojs, resized and then nicely positioned --> 
         <sprite id="score_number_0">
-            <frame x="28" y="0" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="0" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_1">
-            <frame x="28" y="19" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="19" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_2">
-            <frame x="28" y="38" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="38" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_3">
-            <frame x="28" y="57" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="57" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_4">
-            <frame x="28" y="76" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="76" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_5">
-            <frame x="28" y="95" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="95" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_6">
-            <frame x="28" y="114" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="114" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_7">
-            <frame x="28" y="133" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="133" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_8">
-            <frame x="28" y="152" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="152" w="24" h="18" file="black_BG.png" />
         </sprite>
         <sprite id="score_number_9">
-            <frame x="28" y="171" w="24" h="18" file="Numbers.png" />
+            <frame x="28" y="171" w="24" h="18" file="black_BG.png" />
         </sprite>
+
 
 
         <sprite id="jam_number_0">
-            <frame x="0" y="0" w="30" h="40" file="jam_numbers.png" />
+            <frame x="0" y="0" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_1">
-            <frame x="30" y="0" w="30" h="40" file="jam_numbers.png" />
+            <frame x="30" y="0" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_2">
-            <frame x="60" y="0" w="30" h="40" file="jam_numbers.png" />
+            <frame x="60" y="0" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_3">
-            <frame x="90" y="0" w="30" h="40" file="jam_numbers.png" />
+            <frame x="90" y="0" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_4">
-            <frame x="120" y="0" w="30" h="40" file="jam_numbers.png" />
+            <frame x="120" y="0" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_5">
-            <frame x="0" y="40" w="30" h="40" file="jam_numbers.png" />
+            <frame x="0" y="40" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_6">
-            <frame x="30" y="40" w="30" h="40" file="jam_numbers.png" />
+            <frame x="30" y="40" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_7">
-            <frame x="60" y="40" w="30" h="40" file="jam_numbers.png" />
+            <frame x="60" y="40" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_8">
-            <frame x="90" y="40" w="30" h="40" file="jam_numbers.png" />
+            <frame x="90" y="40" w="30" h="40" file="black_BG.png" />
         </sprite>
         <sprite id="jam_number_9">
-            <frame x="120" y="40" w="30" h="40" file="jam_numbers.png" />
+            <frame x="120" y="40" w="30" h="40" file="black_BG.png" />
         </sprite>
 
         <sprite id="jam_title">
-            <frame x="0" y="0" w="67" h="31" file="Jam.png" />
+            <frame x="0" y="0" w="67" h="31" file="black_BG.png" />
         </sprite>
 
         <sprite id="time_number_0">
-            <frame x="0" y="0" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="0" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_1">
-            <frame x="0" y="22" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="22" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_2">
-            <frame x="0" y="44" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="44" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_3">
-            <frame x="0" y="66" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="66" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_4">
-            <frame x="0" y="88" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="88" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_5">
-            <frame x="0" y="110" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="110" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_6">
-            <frame x="0" y="132" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="132" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_7">
-            <frame x="0" y="154" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="154" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_8">
-            <frame x="0" y="176" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="176" w="27" h="21" file="black_BG.png" />
         </sprite>
         <sprite id="time_number_9">
-            <frame x="0" y="198" w="27" h="21" file="Numbers.png" />
+            <frame x="0" y="198" w="27" h="21" file="black_BG.png" />
         </sprite>
 
         <!-- Max Combo is the same as Counter, except slightly enlarged -->
         <sprite id="maxcombo_number_0">
-            <frame x="54" y="0" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="0" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_1">
-            <frame x="54" y="10" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="10" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_2">
-            <frame x="54" y="20" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="20" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_3">
-            <frame x="54" y="30" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="30" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_4">
-            <frame x="54" y="40" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="40" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_5">
-            <frame x="54" y="50" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="50" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_6">
-            <frame x="54" y="60" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="60" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_7">
-            <frame x="54" y="70" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="70" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_8">
-            <frame x="54" y="80" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="80" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="maxcombo_number_9">
-            <frame x="54" y="90" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="90" w="9" h="9" file="black_BG.png" />
         </sprite>
 
         <sprite id="counter_number_0">
-            <frame x="54" y="0" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="0" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_1">
-            <frame x="54" y="10" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="10" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_2">
-            <frame x="54" y="20" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="20" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_3">
-            <frame x="54" y="30" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="30" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_4">
-            <frame x="54" y="40" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="40" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_5">
-            <frame x="54" y="50" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="50" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_6">
-            <frame x="54" y="60" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="60" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_7">
-            <frame x="54" y="70" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="70" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_8">
-            <frame x="54" y="80" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="80" w="9" h="9" file="black_BG.png" />
         </sprite>
         <sprite id="counter_number_9">
-            <frame x="54" y="90" w="9" h="9" file="Numbers.png" />
+            <frame x="54" y="90" w="9" h="9" file="black_BG.png" />
         </sprite>
     </spriteset>
 
