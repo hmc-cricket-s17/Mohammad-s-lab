@@ -13,10 +13,10 @@
         </sprite>
         
         <sprite id="bga10">
-            <frame x="0" y="0" w="596" h="558" file="Playing_BG10.png" />
+            <frame x="0" y="0" w="596" h="558" file="black_BG.png" />
         </sprite>
         <sprite id="bga2">
-            <frame x="0" y="0" w="600" h="560" file="Playing_BG2.jpg" />
+            <frame x="0" y="0" w="600" h="560" file="black_BG.png" />
         </sprite>
         
         <sprite id="dashboard">
@@ -24,7 +24,7 @@
         </sprite>
 
         <sprite id="pill">
-            <frame x="0" y="52" w="28" h="28" file="main.png" />
+            <frame x="0" y="52" w="28" h="28" file="black_BG.png" />
         </sprite>
 
         <sprite id="lifebar_bg">
@@ -63,7 +63,7 @@
         </sprite>
 
         <sprite id="pressed_note_lane_yellow">
-            <frame x="478" y="1" w="32" h="480" file="black_BG.png" />
+            <frame x="478" y="1" w="32" h="480" file="main.png" />
         </sprite>
 
         <sprite framespeed="5" id="measure_mark">
@@ -93,9 +93,9 @@
             <frame x="254" y="159" w="22" h="5" file="main.png" />
         </sprite>
         <sprite framespeed="12" id="head_note_yellow">
-            <frame x="277" y="142" w="32" h="7" file="black_BG.png" />
-            <frame x="277" y="150" w="32" h="7" file="black_BG.png" />
-            <frame x="277" y="158" w="32" h="7" file="black_BG.png" />
+            <frame x="277" y="142" w="32" h="7" file="main.png" />
+            <frame x="277" y="150" w="32" h="7" file="main.png" />
+            <frame x="277" y="158" w="32" h="7" file="main.png" />
         </sprite>
         <sprite framespeed="12" id="body_note_yellow">
             <frame x="277" y="143" w="32" h="5" file="black_BG.png" />
@@ -125,7 +125,7 @@
         </sprite>
 
         <sprite id="pressed_note_keyboard_yellow">
-            <frame x="87" y="315" w="32" h="46" file="black_BG.png" />
+            <frame x="87" y="315" w="32" h="46" file="main.png" />
         </sprite>
 
 
@@ -543,6 +543,7 @@
 	counter_number_7, counter_number_8, counter_number_9" />
 
         </layer>
+
     </skin>
 
 </Resources>

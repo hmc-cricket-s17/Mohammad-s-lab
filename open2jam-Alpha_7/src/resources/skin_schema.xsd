@@ -267,7 +267,8 @@ Direction of the fill. Only used by  BAR entities.
             <xsd:attribute name="sprite" type="entitySprites" use="required">
                 <xsd:annotation>
                     <xsd:documentation>
-A sprite or a set of sprites. Use ,(comma) to separate them.
+A sprite or a set of sprites
+                        . Use ,(comma) to separate them.
 Ex:
 sprite1, sprite2, ...
                     </xsd:documentation>
