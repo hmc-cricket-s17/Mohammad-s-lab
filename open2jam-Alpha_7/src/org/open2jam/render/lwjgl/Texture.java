@@ -55,7 +55,7 @@ public class Texture {
      */
     public int getHeight() {
         return height;
-    }
+    }   
     
     /**
      * Get the width of the physical texture

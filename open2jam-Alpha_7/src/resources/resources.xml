@@ -13,10 +13,10 @@
         </sprite>
         
         <sprite id="bga10">
-            <frame x="0" y="0" w="596" h="558" file="Playing_BG10.png" />
+            <frame x="0" y="0" w="596" h="558" file="black_BG.png" />
         </sprite>
         <sprite id="bga2">
-            <frame x="0" y="0" w="600" h="560" file="Playing_BG2.jpg" />
+            <frame x="0" y="0" w="600" h="560" file="black_BG.png" />
         </sprite>
         
         <sprite id="dashboard">
@@ -24,7 +24,7 @@
         </sprite>
 
         <sprite id="pill">
-            <frame x="0" y="52" w="28" h="28" file="main.png" />
+            <frame x="0" y="52" w="28" h="28" file="black_BG.png" />
         </sprite>
 
         <sprite id="lifebar_bg">
@@ -543,6 +543,7 @@
 	counter_number_7, counter_number_8, counter_number_9" />
 
         </layer>
+
     </skin>
 
 </Resources>

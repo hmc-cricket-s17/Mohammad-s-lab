@@ -134,7 +134,7 @@ public class GameOptions {
      * set the speed type
      * @param mod 
      */
-    public void setSpeedType(SpeedType mod) {
+            public void setSpeedType(SpeedType mod) {
         this.speedType = mod;
     }
 

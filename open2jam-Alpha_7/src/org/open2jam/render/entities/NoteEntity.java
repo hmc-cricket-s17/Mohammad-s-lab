@@ -20,7 +20,7 @@ public class NoteEntity extends AnimatedEntity implements TimeEntity
     public enum State {
         NOT_JUDGED,
         LN_HEAD_JUDGE,
-        JUDGE,
+        JUDGE, 
         TO_KILL,
         LN_HOLD
     }
