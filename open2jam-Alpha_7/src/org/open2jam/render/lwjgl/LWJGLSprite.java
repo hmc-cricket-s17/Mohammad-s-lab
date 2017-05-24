@@ -99,6 +99,8 @@ public class LWJGLSprite implements Sprite {
             GL11.glEnd();
         GL11.glEndList();
     }
+    
+          
 
     private void createRectangle(int width, int height, GameOptions.VisibilityMod type)
     {

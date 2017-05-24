@@ -38,6 +38,7 @@ import org.open2jam.game.position.NoteDistanceCalculator;
 import org.open2jam.game.position.RegulSpeed;
 import org.open2jam.game.position.XRSpeed;
 import org.open2jam.render.lwjgl.TrueTypeFont;
+import org.open2jam.render.lwjgl.LWJGLSprite;
 import org.open2jam.sound.Sound;
 import org.open2jam.sound.SoundChannel;
 import org.open2jam.sound.SoundSystem;
@@ -323,7 +324,7 @@ public class Render implements GameWindowCallback
             public boolean isVisible() { return true; }
         });
         
-        window.setDisplay(dm,opt.isDisplayVsync(),opt.isDisplayFullscreen());
+       window.setDisplay(dm,opt.isDisplayVsync(),opt.isDisplayFullscreen());
     }
 
     public void setAutosyncCallback(AutosyncCallback autosyncDelegate) {
@@ -402,7 +403,7 @@ public class Render implements GameWindowCallback
         // the notes pressed buffer
         keyboard_key_pressed = new EnumMap<Event.Channel,Boolean>(Event.Channel.class);
 
-        // reference to the notes in the buffer, separated by the channel
+        // reference to the notes in the buffer, separated by the channel/Users/macbookpro/Dropbox/College/Summer_2017/Mohammad_lab/open2jam_alpha7
         note_channels = new EnumMap<Event.Channel,LinkedList<NoteEntity>>(Event.Channel.class);
 
         // entity for key pressed events
@@ -448,9 +449,9 @@ public class Render implements GameWindowCallback
 
         pills_draw = new LinkedList<Entity>();
 
-        visibility_entity = new CompositeEntity();
+            visibility_entity = new CompositeEntity();
         if(opt.getVisibilityModifier() != GameOptions.VisibilityMod.None)
-            visibility(opt.getVisibilityModifier());
+             visibility(opt.getVisibilityModifier());
 
         judgment_line = skin.getEntityMap().get("JUDGMENT_LINE");
         entities_matrix.add(judgment_line);
@@ -619,7 +620,7 @@ public class Render implements GameWindowCallback
     {
         window.setGameWindowCallback(this);
         window.setTitle(chart.getArtist()+" - "+chart.getTitle());
-
+                
         try{
             window.startRendering();
         }catch(OutOfMemoryError e) {
@@ -628,7 +629,7 @@ public class Render implements GameWindowCallback
             JOptionPane.showMessageDialog(null, "Fatal Error", "System out of memory ! baillin out !!",JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
-
+        
     }
 
 
@@ -647,7 +648,8 @@ public class Render implements GameWindowCallback
         lastLoopTime = now;
         lastFpsTime += delta;
         fps++;
-
+        
+       
         update_fps_counter();
 
         check_misc_keyboard();
@@ -659,7 +661,7 @@ public class Render implements GameWindowCallback
         }
         
         if (!gameStarted) {
-            start_time = SystemTimer.getTime();
+            start_time = SystemTimer.getTime();       
         }
         
         now = SystemTimer.getTime() - start_time;
@@ -728,8 +730,8 @@ public class Render implements GameWindowCallback
         int y = 300;
         
         for (String s : statusList) {
-            trueTypeFont.drawString(780, y, s, 1, -1, TrueTypeFont.ALIGN_RIGHT);
-            y += 30;
+            //trueTypeFont.drawString(780, y, s, 1, -1, TrueTypeFont.ALIGN_RIGHT);
+            // y += 30;
         }
         
         if(!buffer_iterator.hasNext() && entities_matrix.isEmpty(note_layer)){
@@ -845,7 +847,7 @@ public class Render implements GameWindowCallback
 
                 // don't continue if the note is too far
                 if(judge.accept(e)) {
-                    Logger.global.log(Level.INFO, String.valueOf(now).concat(e.getChannelName()));
+                    Logger.global.log(Level.INFO, String.valueOf(now - start_time ).concat(e.getChannelName()));
                     disableAutoSound = false;
                     e.keysound();
                     if(e instanceof LongNoteEntity) {
@@ -1380,6 +1382,7 @@ public class Render implements GameWindowCallback
         return new_list;
     }
 
+
     private void visibility(GameOptions.VisibilityMod value)
     {
         int height = 0;
@@ -1398,7 +1401,12 @@ public class Render implements GameWindowCallback
                 rec  = ResourceFactory.get().doRectangle(width, height, value);
                 visibility_entity.getEntityList().add(new Entity(rec, skin.getEntityMap().get(ev.toString()).getX(), 0));
             }
+            
+         
         }
+        
+       
+        
 
         int layer = note_layer+1;
 
@@ -1419,6 +1427,8 @@ public class Render implements GameWindowCallback
         skin.getEntityMap().get("MEASURE_MARK").setLayer(layer);
         
         entities_matrix.add(visibility_entity);
+        
+        
     }
 
     /**
