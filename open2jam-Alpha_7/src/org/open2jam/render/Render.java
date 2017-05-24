@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Map.Entry;
 import java.util.*;
@@ -38,7 +39,6 @@ import org.open2jam.game.position.NoteDistanceCalculator;
 import org.open2jam.game.position.RegulSpeed;
 import org.open2jam.game.position.XRSpeed;
 import org.open2jam.render.lwjgl.TrueTypeFont;
-import org.open2jam.render.lwjgl.LWJGLSprite;
 import org.open2jam.sound.Sound;
 import org.open2jam.sound.SoundChannel;
 import org.open2jam.sound.SoundSystem;
@@ -54,6 +54,7 @@ public class Render implements GameWindowCallback
 {
     private String localMatchingServer = "";
     private int rank;
+    private PrintWriter hit_data;
     
     public interface AutosyncCallback {
         void autosyncFinished(double displayLag);
@@ -630,6 +631,8 @@ public class Render implements GameWindowCallback
             System.exit(1);
         }
         
+        hit_data.close();
+        
     }
 
 
@@ -846,8 +849,7 @@ public class Render implements GameWindowCallback
                 e.updateHit(now);
 
                 // don't continue if the note is too far
-                if(judge.accept(e)) {
-                    Logger.global.log(Level.INFO, String.valueOf(now - start_time ).concat(e.getChannelName()));
+                if(judge.accept(e)) {                           
                     disableAutoSound = false;
                     e.keysound();
                     if(e instanceof LongNoteEntity) {
@@ -898,12 +900,16 @@ public class Render implements GameWindowCallback
                 if (judge.missed(ne)) {
                     disableAutoSound = true;
                     setNoteJudgment(ne, JudgmentResult.MISS);
+                    hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
+                            + "," + ne.getChannelName());
                 }
                 break;
                 
             case JUDGE: //LN & normal ones: has finished with good result
                 result = judge.judge(ne);
                 setNoteJudgment(ne, result);
+                hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
+                            + "," + ne.getChannelName() + ",");
                 
                 if (!(ne instanceof LongNoteEntity)) {
                     autosync(ne.getHitTime());
@@ -964,9 +970,12 @@ public class Render implements GameWindowCallback
         }
         
         // display the judgment
-        if(judgment_entity != null)judgment_entity.setDead(true);
+        if(judgment_entity != null) {
+            judgment_entity.setDead(true);
+        }
         judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
         entities_matrix.add(judgment_entity);
+        hit_data.println(result);
 
         // add to the statistics
         note_counter.get(result).incNumber();
@@ -1429,6 +1438,10 @@ public class Render implements GameWindowCallback
         entities_matrix.add(visibility_entity);
         
         
+    }
+    
+    public void setHit_data(PrintWriter writer){
+        this.hit_data = writer;
     }
 
     /**
