@@ -12,7 +12,10 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -1163,11 +1166,16 @@ public class MusicSelection extends javax.swing.JPanel
             r.setJudge(jc_timed_judgment.isSelected()
                     ? new TimeJudgment()
                     : new BeatJudgment());
+            PrintWriter writer = createOutputFile();
             
+            r.setHit_data(writer);
             new RenderThread(this.getTopLevelAncestor(), r).start();
+            
         } catch (SoundSystemException ex) {
             java.util.logging.Logger.getLogger(MusicSelection.class.getName()).log(Level.SEVERE, "{0}", ex);
         }
+        
+        
 }//GEN-LAST:event_bt_playActionPerformed
 
     public void setRank(int rank) {
@@ -1545,5 +1553,25 @@ public class MusicSelection extends javax.swing.JPanel
             string = string.substring(0, size)+"...";
         return string;
     }
+    
+    private PrintWriter createOutputFile(){
+        
+        int fileNum = 0;
+        while(new File("hit_data" + String.valueOf(fileNum) + ".txt").exists()){
+            fileNum++;
+        }   
+        
+        PrintWriter writer = null;
+        try {            
+            writer = new PrintWriter("hit_data" + String.valueOf(fileNum) + ".txt","UTF-8");
+        } catch (FileNotFoundException ex) {
+            java.util.logging.Logger.getLogger(MusicSelection.class.getName()).log(Level.SEVERE, "Could not create a file", ex);
+        } catch (UnsupportedEncodingException ex) {
+            java.util.logging.Logger.getLogger(MusicSelection.class.getName()).log(Level.SEVERE, "could not create a file", ex);
+        }
+        return writer;
+    }
+    
+    
 
 }

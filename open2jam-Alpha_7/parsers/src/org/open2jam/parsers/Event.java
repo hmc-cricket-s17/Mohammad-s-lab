@@ -91,8 +91,12 @@ public class Event implements Comparable<Event> {
     public enum Flag {
         NONE, HOLD, RELEASE, ROLL, MINE, LIFT
     };
+
+    /**
+     * EVENT itself starts from here
+     */
     
-    // Event itselt starts from here
+
     
     private Channel channel;
     private final int measure;
