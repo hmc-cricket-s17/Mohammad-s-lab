@@ -98,9 +98,9 @@
             <frame x="277" y="158" w="32" h="7" file="main.png" />
         </sprite>
         <sprite framespeed="12" id="body_note_yellow">
-            <frame x="277" y="143" w="32" h="5" file="main.png" />
-            <frame x="277" y="151" w="32" h="5" file="main.png" />
-            <frame x="277" y="159" w="32" h="5" file="main.png" />
+            <frame x="277" y="143" w="32" h="5" file="black_BG.png" />
+            <frame x="277" y="151" w="32" h="5" file="black_BG.png" />
+            <frame x="277" y="159" w="32" h="5" file="black_BG.png" />
         </sprite>
 
         <!-- This overlaps hiding notes underneath -->

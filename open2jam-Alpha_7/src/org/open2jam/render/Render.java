@@ -39,6 +39,7 @@ import org.open2jam.game.position.NoteDistanceCalculator;
 import org.open2jam.game.position.RegulSpeed;
 import org.open2jam.game.position.XRSpeed;
 import org.open2jam.render.lwjgl.TrueTypeFont;
+import org.open2jam.render.lwjgl.LWJGLSprite;
 import org.open2jam.sound.Sound;
 import org.open2jam.sound.SoundChannel;
 import org.open2jam.sound.SoundSystem;
@@ -629,10 +630,9 @@ public class Render implements GameWindowCallback
             Logger.global.log(Level.SEVERE, "System out of memory ! baillin out !!{0}", e.getMessage());
             JOptionPane.showMessageDialog(null, "Fatal Error", "System out of memory ! baillin out !!",JOptionPane.ERROR_MESSAGE);
             System.exit(1);
-        }
-        
+        }    
         hit_data.close();
-        
+
     }
 
 
@@ -711,10 +711,13 @@ public class Render implements GameWindowCallback
                     //TODO Fix this, maybe an option in the skin
                     //o2jam overlaps 1 px of the note with the measure and, because of this
                     //our skin should do it too xD
-                    if(e instanceof MeasureEntity) y -= 1;
+                    if(e instanceof MeasureEntity) {
+                        y -= 1;
+                    }
                     
-		    if(!(e instanceof BgaEntity))
-			e.setPos(e.getX(), y);
+		    if(!(e instanceof BgaEntity)) {
+                        e.setPos(e.getX(), y);
+                    }
                     
                     if(e instanceof LongNoteEntity) {
                         LongNoteEntity lne = (LongNoteEntity)e;
@@ -722,7 +725,9 @@ public class Render implements GameWindowCallback
                         lne.setEndDistance(Math.abs(ey - y));
                     }
 
-                    if(e instanceof NoteEntity) check_judgment((NoteEntity)e, now);
+                    if(e instanceof NoteEntity) {
+                        check_judgment((NoteEntity)e, now);
+                    }
                 }
 
                 if(e.isDead())j.remove();
@@ -819,12 +824,15 @@ public class Render implements GameWindowCallback
         {
             Event.Channel c = entry.getKey();
             if(c != Event.Channel.NOTE_4){
+
                 if(c.isAutoplay()) continue;
+
 
                 boolean keyDown = window.isKeyDown(entry.getValue());
                 boolean keyWasDown = keyboard_key_pressed.get(c);
 
                 if(keyDown && !keyWasDown){ // started holding now
+
 
                     if (!gameStarted && localMatching == null) gameStarted = true;  
 
@@ -851,6 +859,8 @@ public class Render implements GameWindowCallback
 
                     // don't continue if the note is too far
                     if(judge.accept(e)) {                           
+
+
                         disableAutoSound = false;
                         e.keysound();
                         if(e instanceof LongNoteEntity) {
@@ -883,6 +893,7 @@ public class Render implements GameWindowCallback
                 }
             }
         }
+
     }
     
     private void autosync(double hit) {
@@ -893,6 +904,7 @@ public class Render implements GameWindowCallback
     public void check_judgment(NoteEntity ne, double now)
     {
         JudgmentResult result;
+
         // I am thinking this line would inable recording of NOTE_4
         if(ne.getChannelName() != "NOTE_4"){
         switch (ne.getState())
@@ -930,23 +942,25 @@ public class Render implements GameWindowCallback
                 break;
 
             case LN_HEAD_JUDGE: //LN: Head has been played
-  
-                result = judge.judge(ne);
-                setNoteJudgment(ne, result);
-                    
-                // display the long flare and kill the old one
-                if (result != JudgmentResult.MISS) {
-                    Entity ee = skin.getEntityMap().get("EFFECT_LONGFLARE").copy();
-                    ee.setPos(ne.getX()+ne.getWidth()/2-ee.getWidth()/2,ee.getY());
-                    entities_matrix.add(ee);
-                    Entity to_kill = longflare.put(ne.getChannel(),ee);
-                    if(to_kill != null)to_kill.setDead(true);
 
-                    ne.setState(NoteEntity.State.LN_HOLD);
-                } else {
-                    System.out.println(ne.getTimeToJudge() + " - " + now);
-                }
-                break;
+                    result = judge.judge(ne);
+                    setNoteJudgment(ne, result);
+
+                    // display the long flare and kill the old one
+                    if (result != JudgmentResult.MISS) {
+                        Entity ee = skin.getEntityMap().get("EFFECT_LONGFLARE").copy();
+                        ee.setPos(ne.getX()+ne.getWidth()/2-ee.getWidth()/2,ee.getY());
+                        entities_matrix.add(ee);
+                        Entity to_kill = longflare.put(ne.getChannel(),ee);
+                        if(to_kill != null)to_kill.setDead(true);
+
+                        ne.setState(NoteEntity.State.LN_HOLD);
+                    } else {
+                        System.out.println(ne.getTimeToJudge() + " - " + now);
+                    }
+                    break;
+
+
                 
             case TO_KILL: // this is the "garbage collector", it just removes the notes off window
                 
@@ -974,12 +988,14 @@ public class Render implements GameWindowCallback
             }
 
             // display the judgment
+
             if(judgment_entity != null) {
                 judgment_entity.setDead(true);
             }
             judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
             entities_matrix.add(judgment_entity);
             hit_data.println(result);
+
 
             // add to the statistics
             note_counter.get(result).incNumber();
@@ -1442,10 +1458,12 @@ public class Render implements GameWindowCallback
         entities_matrix.add(visibility_entity);
         
         
+
     }
     
     public void setHit_data(PrintWriter writer){
         this.hit_data = writer;
+
     }
 
     /**
