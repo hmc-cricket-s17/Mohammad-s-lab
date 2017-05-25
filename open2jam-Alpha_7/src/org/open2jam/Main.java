@@ -31,8 +31,6 @@ public class Main implements Runnable
         
         setupLogging();
         
-        stupOut();
-
         trySetLAF();
         
         EventQueue.invokeLater(new Main());
@@ -51,14 +49,7 @@ public class Main implements Runnable
         Logger.global.setLevel(Level.INFO);
     }
     
-    private static void stupOut()
-    {
-        try {
-            PrintWriter out = new PrintWriter("hit_data.txt");
-        } catch (FileNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+   
     private static void trySetLAF()
     {
         try {
