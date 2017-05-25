@@ -818,7 +818,7 @@ public class Render implements GameWindowCallback
 	for(Map.Entry<Event.Channel,Integer> entry : keyboard_map.entrySet())
         {
             Event.Channel c = entry.getKey();
-            if(c != Event.Channel.NOTE_4){
+            if(c == Event.Channel.NOTE_1 || c == Event.Channel.NOTE_2 || c == Event.Channel.NOTE_3){
                 if(c.isAutoplay()) continue;
 
                 boolean keyDown = window.isKeyDown(entry.getValue());
@@ -894,7 +894,8 @@ public class Render implements GameWindowCallback
     {
         JudgmentResult result;
         // I am thinking this line would inable recording of NOTE_4
-        if(ne.getChannelName() != "NOTE_4"){
+        String cName = ne.getChannelName();
+        if(cName == "NOTE_1" || cName == "NOTE_2" || cName == "NOTE_3"){
         switch (ne.getState())
         {
             case NOT_JUDGED: // you missed it (no keyboard input)
@@ -963,7 +964,8 @@ public class Render implements GameWindowCallback
     }
     
     public void setNoteJudgment(NoteEntity ne, JudgmentResult result) {
-        if(ne.getChannelName() == "NOTE_4"){
+        String cName = ne.getChannelName();
+        if(cName == "NOTE_4" || cName == "NOTE_5" || cName == "NOTE_6" || cName == "NOTE_7"){
             ne.setDead(true);
         }else {
             result = handleJudgment(result);
@@ -1362,10 +1364,11 @@ public class Render implements GameWindowCallback
                 case TIME_SIGNATURE:
                     frac_measure = e.getValue();
                 break;
-                case NOTE_4: break;
+                case NOTE_4:case NOTE_5:
+                case NOTE_6:case NOTE_7: break;
                 case NOTE_1:case NOTE_2:
                 case NOTE_3:
-                case NOTE_5:case NOTE_6:case NOTE_7:
+                
                 case NOTE_SC:
                 case NOTE_8:case NOTE_9:
                 case NOTE_10:case NOTE_11:
