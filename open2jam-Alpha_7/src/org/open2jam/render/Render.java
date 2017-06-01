@@ -39,6 +39,7 @@ import org.open2jam.game.position.NoteDistanceCalculator;
 import org.open2jam.game.position.RegulSpeed;
 import org.open2jam.game.position.XRSpeed;
 import org.open2jam.render.lwjgl.TrueTypeFont;
+import org.open2jam.render.lwjgl.LWJGLSprite;
 import org.open2jam.sound.Sound;
 import org.open2jam.sound.SoundChannel;
 import org.open2jam.sound.SoundSystem;
@@ -629,10 +630,9 @@ public class Render implements GameWindowCallback
             Logger.global.log(Level.SEVERE, "System out of memory ! baillin out !!{0}", e.getMessage());
             JOptionPane.showMessageDialog(null, "Fatal Error", "System out of memory ! baillin out !!",JOptionPane.ERROR_MESSAGE);
             System.exit(1);
-        }
-        
+        }    
         hit_data.close();
-        
+
     }
 
 
@@ -711,10 +711,13 @@ public class Render implements GameWindowCallback
                     //TODO Fix this, maybe an option in the skin
                     //o2jam overlaps 1 px of the note with the measure and, because of this
                     //our skin should do it too xD
-                    if(e instanceof MeasureEntity) y -= 1;
+                    if(e instanceof MeasureEntity) {
+                        y -= 1;
+                    }
                     
-		    if(!(e instanceof BgaEntity))
-			e.setPos(e.getX(), y);
+		    if(!(e instanceof BgaEntity)) {
+                        e.setPos(e.getX(), y);
+                    }
                     
                     if(e instanceof LongNoteEntity) {
                         LongNoteEntity lne = (LongNoteEntity)e;
@@ -722,7 +725,9 @@ public class Render implements GameWindowCallback
                         lne.setEndDistance(Math.abs(ey - y));
                     }
 
-                    if(e instanceof NoteEntity) check_judgment((NoteEntity)e, now);
+                    if(e instanceof NoteEntity) {
+                        check_judgment((NoteEntity)e, now);
+                    }
                 }
 
                 if(e.isDead())j.remove();
@@ -818,70 +823,77 @@ public class Render implements GameWindowCallback
 	for(Map.Entry<Event.Channel,Integer> entry : keyboard_map.entrySet())
         {
             Event.Channel c = entry.getKey();
-	    if(c.isAutoplay()) continue;
-            
-            boolean keyDown = window.isKeyDown(entry.getValue());
-            boolean keyWasDown = keyboard_key_pressed.get(c);
-            
-            if(keyDown && !keyWasDown){ // started holding now
-                
-                if (!gameStarted && localMatching == null) gameStarted = true;  
-                
-                keyboard_key_pressed.put(c, true);
-                Entity baseEntity = skin.getEntityMap().get("PRESSED_"+c);
-                Entity to_kill = null;
-                
-                if (baseEntity != null) {
-                    Entity ee = baseEntity.copy();
-                    entities_matrix.add(ee);
-                    to_kill = key_pressed_entity.put(c, ee);
-                }
-                
-                if(to_kill != null)to_kill.setDead(true);
+            if(c != Event.Channel.NOTE_4){
 
-                NoteEntity e = nextNoteKey(c);
-                if(e == null){
-                    SampleEntity i = last_sound.get(c);
-                    if(i != null) i.extrasound();
-                    continue;
-                }
+                if(c.isAutoplay()) continue;
 
-                e.updateHit(now);
 
-                // don't continue if the note is too far
-                if(judge.accept(e)) {                           
-                    disableAutoSound = false;
-                    e.keysound();
-                    if(e instanceof LongNoteEntity) {
-                        longnote_holded.put(c, (LongNoteEntity) e);
-                        if(e.getState() == NoteEntity.State.NOT_JUDGED)
-                            e.setState(NoteEntity.State.LN_HEAD_JUDGE);
-                    } else {
-                        e.setState(NoteEntity.State.JUDGE);
+                boolean keyDown = window.isKeyDown(entry.getValue());
+                boolean keyWasDown = keyboard_key_pressed.get(c);
+
+                if(keyDown && !keyWasDown){ // started holding now
+
+
+                    if (!gameStarted && localMatching == null) gameStarted = true;  
+
+                    keyboard_key_pressed.put(c, true);
+                    Entity baseEntity = skin.getEntityMap().get("PRESSED_"+c);
+                    Entity to_kill = null;
+
+                    if (baseEntity != null) {
+                        Entity ee = baseEntity.copy();
+                        entities_matrix.add(ee);
+                        to_kill = key_pressed_entity.put(c, ee);
                     }
-                } else {
-                    e.getSampleEntity().extrasound();
+
+                    if(to_kill != null)to_kill.setDead(true);
+
+                    NoteEntity e = nextNoteKey(c);
+                    if(e == null){
+                        SampleEntity i = last_sound.get(c);
+                        if(i != null) i.extrasound();
+                        continue;
+                    }
+
+                    e.updateHit(now);
+
+                    // don't continue if the note is too far
+                    if(judge.accept(e)) {                           
+
+
+                        disableAutoSound = false;
+                        e.keysound();
+                        if(e instanceof LongNoteEntity) {
+                            longnote_holded.put(c, (LongNoteEntity) e);
+                            if(e.getState() == NoteEntity.State.NOT_JUDGED)
+                                e.setState(NoteEntity.State.LN_HEAD_JUDGE);
+                        } else {
+                            e.setState(NoteEntity.State.JUDGE);
+                        }
+                    } else {
+                        e.getSampleEntity().extrasound();
+                    }
+
+                }else if(!keyDown && keyWasDown) { // key released now
+
+                    keyboard_key_pressed.put(c, false);
+                    Entity to_kill = key_pressed_entity.get(c);
+
+                    if(to_kill != null)to_kill.setDead(true);
+
+                    Entity lf = longflare.remove(c);
+                    if(lf !=null)lf.setDead(true);
+
+                    LongNoteEntity e = longnote_holded.remove(c);
+                    if(e == null || e.getState() != NoteEntity.State.LN_HOLD)continue;
+
+                    e.updateHit(now);
+                    e.setState(NoteEntity.State.JUDGE);
+
                 }
-                
-            }else if(!keyDown && keyWasDown) { // key released now
-
-                keyboard_key_pressed.put(c, false);
-                Entity to_kill = key_pressed_entity.get(c);
-                
-                if(to_kill != null)to_kill.setDead(true);
-
-                Entity lf = longflare.remove(c);
-                if(lf !=null)lf.setDead(true);
-                
-                LongNoteEntity e = longnote_holded.remove(c);
-                if(e == null || e.getState() != NoteEntity.State.LN_HOLD)continue;
-
-                e.updateHit(now);
-                e.setState(NoteEntity.State.JUDGE);
-                
             }
         }
-        
+
     }
     
     private void autosync(double hit) {
@@ -892,7 +904,9 @@ public class Render implements GameWindowCallback
     public void check_judgment(NoteEntity ne, double now)
     {
         JudgmentResult result;
-        
+
+        // I am thinking this line would inable recording of NOTE_4
+        if(ne.getChannelName() != "NOTE_4"){
         switch (ne.getState())
         {
             case NOT_JUDGED: // you missed it (no keyboard input)
@@ -900,7 +914,7 @@ public class Render implements GameWindowCallback
                 if (judge.missed(ne)) {
                     disableAutoSound = true;
                     setNoteJudgment(ne, JudgmentResult.MISS);
-                    hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
+                    hit_data.println(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
                 }
                 break;
@@ -908,7 +922,7 @@ public class Render implements GameWindowCallback
             case JUDGE: //LN & normal ones: has finished with good result
                 result = judge.judge(ne);
                 setNoteJudgment(ne, result);
-                hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
+                hit_data.println(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName() + ",");
                 
                 if (!(ne instanceof LongNoteEntity)) {
@@ -928,23 +942,25 @@ public class Render implements GameWindowCallback
                 break;
 
             case LN_HEAD_JUDGE: //LN: Head has been played
-  
-                result = judge.judge(ne);
-                setNoteJudgment(ne, result);
-                    
-                // display the long flare and kill the old one
-                if (result != JudgmentResult.MISS) {
-                    Entity ee = skin.getEntityMap().get("EFFECT_LONGFLARE").copy();
-                    ee.setPos(ne.getX()+ne.getWidth()/2-ee.getWidth()/2,ee.getY());
-                    entities_matrix.add(ee);
-                    Entity to_kill = longflare.put(ne.getChannel(),ee);
-                    if(to_kill != null)to_kill.setDead(true);
 
-                    ne.setState(NoteEntity.State.LN_HOLD);
-                } else {
-                    System.out.println(ne.getTimeToJudge() + " - " + now);
-                }
-                break;
+                    result = judge.judge(ne);
+                    setNoteJudgment(ne, result);
+
+                    // display the long flare and kill the old one
+                    if (result != JudgmentResult.MISS) {
+                        Entity ee = skin.getEntityMap().get("EFFECT_LONGFLARE").copy();
+                        ee.setPos(ne.getX()+ne.getWidth()/2-ee.getWidth()/2,ee.getY());
+                        entities_matrix.add(ee);
+                        Entity to_kill = longflare.put(ne.getChannel(),ee);
+                        if(to_kill != null)to_kill.setDead(true);
+
+                        ne.setState(NoteEntity.State.LN_HOLD);
+                    } else {
+                        System.out.println(ne.getTimeToJudge() + " - " + now);
+                    }
+                    break;
+
+
                 
             case TO_KILL: // this is the "garbage collector", it just removes the notes off window
                 
@@ -955,54 +971,58 @@ public class Render implements GameWindowCallback
                 }
                 
             break;
-                
+        }   
         }
         
     }
     
     public void setNoteJudgment(NoteEntity ne, JudgmentResult result) {
-        
-        result = handleJudgment(result);
-        
-        // stop the sound if missed
-        if (result == JudgmentResult.MISS) {
-            ne.missed();
-        }
-        
-        // display the judgment
-        if(judgment_entity != null) {
-            judgment_entity.setDead(true);
-        }
-        judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
-        entities_matrix.add(judgment_entity);
-        hit_data.println(result);
-
-        // add to the statistics
-        note_counter.get(result).incNumber();
-        
-        // for cool: display the effect
-        if (result == JudgmentResult.COOL || result == JudgmentResult.GOOD) {
-            Entity ee = skin.getEntityMap().get("EFFECT_CLICK").copy();
-            ee.setPos(ne.getX()+ne.getWidth()/2-ee.getWidth()/2,
-            getViewport()-ee.getHeight()/2);
-            entities_matrix.add(ee);
-        }
-        
-        // delete the note
-        if (result == JudgmentResult.MISS || (ne instanceof LongNoteEntity)) {
-            ne.setState(NoteEntity.State.TO_KILL);
-        } else {
+        if(ne.getChannelName() == "NOTE_4"){
             ne.setDead(true);
-        }
-        
-        // update combo
-        if (shouldIncreaseCombo(result)) {
-            combo_entity.incNumber();
-        } else {
-            combo_entity.resetNumber();
-        }
-        
+        }else {
+            result = handleJudgment(result);
 
+            // stop the sound if missed
+            if (result == JudgmentResult.MISS) {
+                ne.missed();
+            }
+
+            // display the judgment
+
+            if(judgment_entity != null) {
+                judgment_entity.setDead(true);
+            }
+            judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
+            entities_matrix.add(judgment_entity);
+            hit_data.print(result);
+
+
+            // add to the statistics
+            note_counter.get(result).incNumber();
+
+            // for cool: display the effect
+            if (result == JudgmentResult.COOL || result == JudgmentResult.GOOD) {
+                Entity ee = skin.getEntityMap().get("EFFECT_CLICK").copy();
+                ee.setPos(ne.getX()+ne.getWidth()/2-ee.getWidth()/2,
+                getViewport()-ee.getHeight()/2);
+                entities_matrix.add(ee);
+            }
+
+            // delete the note
+            if (result == JudgmentResult.MISS || (ne instanceof LongNoteEntity)) {
+                ne.setState(NoteEntity.State.TO_KILL);
+            } else {
+                ne.setDead(true);
+            }
+
+            // update combo
+            if (shouldIncreaseCombo(result)) {
+                combo_entity.incNumber();
+            } else {
+                combo_entity.resetNumber();
+            }
+
+        }
     }
 
     public boolean shouldIncreaseCombo(JudgmentResult result) {
@@ -1012,11 +1032,11 @@ public class Render implements GameWindowCallback
         }
         return true;
     }
-    
+
     public JudgmentResult handleJudgment(JudgmentResult result) {
 
         int score_value = 0;
-        
+
         switch(result)
         {
             case COOL:
@@ -1063,7 +1083,7 @@ public class Render implements GameWindowCallback
                 else score_value = -score_entity.getNumber();
             break;
         }
-        
+
         score_entity.addNumber(score_value);
 
         if(jambar_entity.getNumber() >= jambar_entity.getLimit())
@@ -1071,7 +1091,7 @@ public class Render implements GameWindowCallback
             jambar_entity.setNumber(0); //reset
             jamcombo_entity.incNumber();
         }
-        
+
         if(consecutive_cools >= 15 && pills_draw.size() < 5)
         {
             consecutive_cools -= 15;
@@ -1084,7 +1104,7 @@ public class Render implements GameWindowCallback
         {
             maxcombo_entity.incNumber();
         }
-        
+
         return result;
 
     }
@@ -1326,7 +1346,7 @@ public class Render implements GameWindowCallback
 
         for(Event e : list)
         {
-            while(e.getMeasure() > measure)
+            while(e.getMeasure() > measure )
             {
                 timer += (BEATS_PER_MSEC * (frac_measure-measure_pointer)) / my_bpm;
                 m = new Event(Event.Channel.MEASURE, measure, 0, 0, Event.Flag.NONE);
@@ -1358,9 +1378,9 @@ public class Render implements GameWindowCallback
                 case TIME_SIGNATURE:
                     frac_measure = e.getValue();
                 break;
-
+                case NOTE_4: break;
                 case NOTE_1:case NOTE_2:
-                case NOTE_3:case NOTE_4:
+                case NOTE_3:
                 case NOTE_5:case NOTE_6:case NOTE_7:
                 case NOTE_SC:
                 case NOTE_8:case NOTE_9:
@@ -1438,10 +1458,12 @@ public class Render implements GameWindowCallback
         entities_matrix.add(visibility_entity);
         
         
+
     }
     
     public void setHit_data(PrintWriter writer){
         this.hit_data = writer;
+
     }
 
     /**
