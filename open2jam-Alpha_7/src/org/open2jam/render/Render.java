@@ -902,7 +902,7 @@ public class Render implements GameWindowCallback
                 if (judge.missed(ne)) {
                     disableAutoSound = true;
                     setNoteJudgment(ne, JudgmentResult.MISS);
-                    hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
+                    hit_data.println(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
                 }
                 break;
@@ -910,7 +910,7 @@ public class Render implements GameWindowCallback
             case JUDGE: //LN & normal ones: has finished with good result
                 result = judge.judge(ne);
                 setNoteJudgment(ne, result);
-                hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
+                hit_data.println(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName() + ",");
                 
                 if (!(ne instanceof LongNoteEntity)) {
@@ -979,7 +979,7 @@ public class Render implements GameWindowCallback
             }
             judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
             entities_matrix.add(judgment_entity);
-            hit_data.println(result);
+            hit_data.print(result);
 
             // add to the statistics
             note_counter.get(result).incNumber();
