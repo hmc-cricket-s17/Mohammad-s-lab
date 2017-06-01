@@ -1051,14 +1051,14 @@ public class Render implements GameWindowCallback
         switch(result)
         {
             case COOL:
-                jambar_entity.addNumber(2);
+                // jambar_entity.addNumber(2);
                 consecutive_cools++;
                 lifebar_entity.addNumber(rank >= 2 ? 24 : 48);
                 score_value = 200 + (jamcombo_entity.getNumber()*10);
                 break;
 
             case GOOD:
-                jambar_entity.addNumber(1);
+                // jambar_entity.addNumber(1);
                 consecutive_cools = 0;
                 score_value = 100;
                 break;
@@ -1067,7 +1067,7 @@ public class Render implements GameWindowCallback
                 if(pills_draw.size() > 0)
                 {
                     result = JudgmentResult.GOOD;
-                    jambar_entity.addNumber(1);
+                    // jambar_entity.addNumber(1);
                     pills_draw.removeLast().setDead(true);
 
                     score_value = 100; // TODO: not sure
