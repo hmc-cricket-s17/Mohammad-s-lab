@@ -1,4 +1,4 @@
-package org.open2jam.gui.parts;
+ package org.open2jam.gui.parts;
 
 import com.github.dtinth.partytime.server.Server;
 import com.github.dtinth.partytime.server.ServerUI;

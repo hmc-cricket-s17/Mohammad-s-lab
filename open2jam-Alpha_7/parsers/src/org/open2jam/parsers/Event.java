@@ -42,7 +42,7 @@ public class Event implements Comparable<Event> {
 	
 	public static Channel[] playableChannels() {
 	    Channel[] playable = {
-		NOTE_1, NOTE_2, NOTE_3, NOTE_4, NOTE_5, NOTE_6, NOTE_7
+		NOTE_1, NOTE_2, NOTE_3,  NOTE_5, NOTE_6, NOTE_7
 	    };
 	    return playable;
 	}
@@ -91,10 +91,11 @@ public class Event implements Comparable<Event> {
     public enum Flag {
         NONE, HOLD, RELEASE, ROLL, MINE, LIFT
     };
+
     /**
      * EVENT itself starts from here
      */
-    
+   
     
     private Channel channel;
     private final int measure;
