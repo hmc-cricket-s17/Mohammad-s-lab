@@ -1003,7 +1003,7 @@ public class Render implements GameWindowCallback
                 judgment_entity.setDead(true);
             }
             judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
-            entities_matrix.add(judgment_entity);
+            // entities_matrix.add(judgment_entity);
             hit_data.print(result + ",");
 
 
@@ -1015,7 +1015,7 @@ public class Render implements GameWindowCallback
                 Entity ee = skin.getEntityMap().get("EFFECT_CLICK").copy();
                 ee.setPos(ne.getX()+ne.getWidth()/2-ee.getWidth()/2,
                 getViewport()-ee.getHeight()/2);
-                entities_matrix.add(ee);
+                // entities_matrix.add(ee);
             }
 
 
