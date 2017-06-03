@@ -988,18 +988,28 @@ public class Render implements GameWindowCallback
             }
 
             // display the judgment
+            
+            
 
             if(judgment_entity != null) {
                 judgment_entity.setDead(true);
             }
-            judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
+            
+            // Always show miss
+            judgment_entity = skin.getEntityMap().get("EFFECT_" + handleJudgment( JudgmentResult.MISS)).copy();
+            entities_matrix.add(judgment_entity);
+            
+            
+            //judgment_entity = skin.getEntityMap().get("EFFECT_"+result).copy();
             // entities_matrix.add(judgment_entity);
             hit_data.print(result);
 
 
             // add to the statistics
             note_counter.get(result).incNumber();
-
+            
+            
+            
             // for cool: display the effect
             if (result == JudgmentResult.COOL || result == JudgmentResult.GOOD) {
                 Entity ee = skin.getEntityMap().get("EFFECT_CLICK").copy();
