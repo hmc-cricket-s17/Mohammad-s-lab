@@ -9,8 +9,10 @@ import org.open2jam.sound.FmodExSoundSystem;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Map.Entry;
 import java.util.*;
@@ -364,6 +366,7 @@ public class Render implements GameWindowCallback
     @Override
     public void initialise()
     {
+        outZero();
         lastLoopTime = SystemTimer.getTime();
 
         // skin load
@@ -902,6 +905,7 @@ public class Render implements GameWindowCallback
                     setNoteJudgment(ne, JudgmentResult.MISS);
                     hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
+                    trigger();
                 }
                 break;
                 
@@ -1443,6 +1447,49 @@ public class Render implements GameWindowCallback
     public void setHit_data(PrintWriter writer){
         this.hit_data = writer;
     }
+    
+    /**
+     * Methods to communicate with Matlab
+     */
+    
+    private void trigger(){
+          
+        outOne();
+        try {
+            Thread.sleep(3);
+        } catch (InterruptedException ex) {
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        outZero();
+        
+    }
+    
+    // Set the value of communicate.txt to 0
+    private void outZero(){
+        PrintWriter writer = openFile();
+        writer.print('0');
+        writer.close();
+    }
+    
+    // Set the value of communicate.txt to 1
+    private void outOne(){
+        PrintWriter writer = openFile();
+        writer.print('1');
+        writer.close();
+        
+    }
+    
+    private PrintWriter openFile(){
+        PrintWriter writer = null;           
+        try {
+            writer = new PrintWriter("communicate.txt","UTF-8");
+        } catch (FileNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return writer;
+    }
 
     /**
      * Notification that the game window has been closed
@@ -1461,6 +1508,7 @@ public class Render implements GameWindowCallback
             });
         }
     }
+    
     
     private double clamp(double value, double min, double max)
     {
