@@ -906,6 +906,8 @@ public class Render implements GameWindowCallback
                     hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
                     trigger();
+                    java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.INFO, null, "trigger! trigger!");
+                    
                 }
                 break;
                 
