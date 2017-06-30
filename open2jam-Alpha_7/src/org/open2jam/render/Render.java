@@ -8,8 +8,10 @@ import com.github.dtinth.partytime.Client;
 import org.open2jam.sound.FmodExSoundSystem;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -1468,17 +1470,18 @@ public class Render implements GameWindowCallback
     
     // Set the value of communicate.txt to 0
     private void outZero(){
-        PrintWriter writer = openFile();
-        writer.print('0');
-        writer.close();
+        outNum('0');
     }
     
     // Set the value of communicate.txt to 1
     private void outOne(){
+        outNum('1');
+    }
+    
+    private void outNum(char x){
         PrintWriter writer = openFile();
-        writer.print('1');
+        writer.print(x);
         writer.close();
-        
     }
     
     private PrintWriter openFile(){
@@ -1492,6 +1495,46 @@ public class Render implements GameWindowCallback
         }
         return writer;
     }
+    
+    /**
+     * Communicate with Matlab (as an input)
+     */
+    private String readFromMat(String filename){
+        BufferedReader br = null;
+        FileReader fr = null;
+        try {
+
+			fr = new FileReader(filename);
+			br = new BufferedReader(fr);
+                        
+                        return br.readLine();
+
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			try {
+
+				if (br != null) {
+                                br.close();
+                            }
+
+				if (fr != null) {
+                                fr.close();
+                            }
+
+			} catch (IOException ex) {
+
+				ex.printStackTrace();
+
+			}
+
+		}
+        return "";
+    }
+    
 
     /**
      * Notification that the game window has been closed
@@ -1510,6 +1553,8 @@ public class Render implements GameWindowCallback
             });
         }
     }
+    
+    
     
     
     private double clamp(double value, double min, double max)
