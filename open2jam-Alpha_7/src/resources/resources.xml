@@ -379,6 +379,13 @@
         <sprite id="counter_number_9">
             <frame x="54" y="90" w="9" h="9" file="black_BG.png" />
         </sprite>
+        <sprite id="white_circle">
+            <frame x = "0" y = "0" w = "50" h = "50" file="white_circle.png"/>
+        </sprite>
+        <sprite id="black_box">
+            <frame x = "0" y = "0" w = "50" h = "50" file="black_BG.png"/>
+        </sprite>
+                
     </spriteset>
 
     <skin name="o2jam" keys="7" scratch="false" width="800" height="600" judgment_line="480">
@@ -447,7 +454,17 @@
         <layer>
             <entity id="JAM_BAR" x="304" y="536" sprite="jam_bar" fill_direction="left_to_right"/>
         </layer>
-
+        
+   <!--Flash -->
+        
+        <layer>
+            <entity id = "FLASH_RIGHT" x = "627" y = "50" sprite="white_circle"/>
+            <entity id = "FLASH_LEFT" x = "150" y = "50" sprite="white_circle"/>
+            <entity id = "NO_FLASH_RIGHT" x = "627" y = "50" sprite="black_box"/>
+            <entity id = "NO_FLASH_LEFT" x = "150" y = "50" sprite="black_box"/>
+        </layer>
+              
+        
     <!-- pressed keyboard keys sprites -->
         <layer>
             <entity id="PRESSED_NOTE_1" x="303"    y="487" sprite="pressed_note_keyboard_white1" />

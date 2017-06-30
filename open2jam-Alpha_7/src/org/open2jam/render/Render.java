@@ -198,6 +198,10 @@ public class Render implements GameWindowCallback
     NumberEntity second_entity;
 
     Entity judgment_entity;
+    
+    Entity flash_left;
+    Entity flash_right;
+    boolean before_flash;
 
     /** the combo counter */
     ComboCounterEntity combo_entity;
@@ -639,6 +643,40 @@ public class Render implements GameWindowCallback
         hit_data.close();
         
     }
+    
+    /**
+    * Trying to play the music only for 30 secs... hopefully I can make it
+    */
+    public void playMusic()
+    {
+        double now = SystemTimer.getTime();
+        double delta = now - lastLoopTime;
+        lastLoopTime = now;
+        
+        now = SystemTimer.getTime() - start_time;
+
+        if (AUTOSOUND) now -= audioLatency.getLatency();
+        
+        double now_display = now + displayLatency.getLatency();
+        do_autoplay(now);
+        // restore the chart sound samples
+	sounds = new HashMap<Integer, Sound>();
+        for(Entry<Integer, SampleData> entry : chart.getSamples().entrySet())
+        {
+            SampleData sampleData = entry.getValue();
+            try {
+                Sound sound = soundSystem.load(sampleData);
+                sounds.put(entry.getKey(), sound);
+            } catch (SoundSystemException ex) {
+                java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, "{0}", ex);
+            }
+	    try {
+		entry.getValue().dispose();
+	    } catch (IOException ex) {
+		java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, "{0}", ex);
+	    }
+        }
+    }
 
 
     /**
@@ -663,13 +701,14 @@ public class Render implements GameWindowCallback
         check_misc_keyboard();
         
         changeSpeed(delta); // TODO: is everything here really needed every frame ?
-
+        showFlash();
+        
         if (!gameStarted && localMatching != null) {
             if (localMatching.isReady()) gameStarted = true;
         }
         
         if (!gameStarted) {
-            start_time = SystemTimer.getTime();       
+            start_time = SystemTimer.getTime();
         }
         
         now = SystemTimer.getTime() - start_time;
@@ -908,7 +947,7 @@ public class Render implements GameWindowCallback
                     hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
                     trigger();
-                    java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.INFO, null, "trigger! trigger!");
+                    
                     
                 }
                 break;
@@ -1495,6 +1534,24 @@ public class Render implements GameWindowCallback
         }
         return writer;
     }
+    private void showFlash(){
+        if(detectBeep() && !before_flash){
+            flash_left = skin.getEntityMap().get("FLASH_LEFT").copy();
+            flash_right = skin.getEntityMap().get("FLASH_RIGHT").copy();
+            
+        }else if(flash_left != null){
+            flash_left = skin.getEntityMap().get("NO_FLASH_LEFT").copy();
+            flash_right = skin.getEntityMap().get("NO_FLASH_RIGHT").copy();
+        }
+        if(flash_left != null){
+        entities_matrix.add(flash_left);
+        entities_matrix.add(flash_right);
+        }
+    }
+    
+    private boolean detectBeep(){
+        return "1".equals(readFromMat("beeps.txt"));
+    }
     
     /**
      * Communicate with Matlab (as an input)
@@ -1506,8 +1563,10 @@ public class Render implements GameWindowCallback
 
 			fr = new FileReader(filename);
 			br = new BufferedReader(fr);
-                        
-                        return br.readLine();
+                        String letter = br.readLine();
+                        fr.close();
+                        br.close();
+                        return letter;
 
 		} catch (IOException e) {
 
