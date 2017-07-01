@@ -48,6 +48,7 @@ import org.open2jam.sound.SoundChannel;
 import org.open2jam.sound.SoundSystem;
 import org.open2jam.sound.SoundSystemException;
 import org.open2jam.util.*;
+import java.util.LinkedList;
 
 
 /**
@@ -199,9 +200,11 @@ public class Render implements GameWindowCallback
 
     Entity judgment_entity;
     
-    Entity flash_left;
-    Entity flash_right;
+    int flash_index;
+    Entity flash;
     boolean before_flash;
+    LinkedList<Integer> flash_vec;
+    Iterator<Integer> flash_it;
 
     /** the combo counter */
     ComboCounterEntity combo_entity;
@@ -263,6 +266,8 @@ public class Render implements GameWindowCallback
         soundSystem.setKeyVolume(opt.getKeyVolume());
         
         entities_matrix = new EntityMatrix();
+        
+        initFlashVec();
         this.chart = chart;
         this.opt = opt;
         
@@ -656,9 +661,13 @@ public class Render implements GameWindowCallback
         now = SystemTimer.getTime() - start_time;
 
         if (AUTOSOUND) now -= audioLatency.getLatency();
-        
         double now_display = now + displayLatency.getLatency();
+        
+        
         do_autoplay(now);
+        
+        
+        
         // restore the chart sound samples
 	sounds = new HashMap<Integer, Sound>();
         for(Entry<Integer, SampleData> entry : chart.getSamples().entrySet())
@@ -1534,18 +1543,34 @@ public class Render implements GameWindowCallback
         }
         return writer;
     }
+    
+    /**
+     * Initialize the location vector of the flash
+     */
+    private void initFlashVec(){
+        Integer[] flash_list = new Integer[]{2,2,3,4,5,6,1,2,3,4,5,6,1,2, 3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6};
+        flash_vec = new java.util.LinkedList<Integer>(Arrays.asList(flash_list));
+        flash_it = flash_vec.iterator();
+        
+        
+    }
+    
+    
     private void showFlash(){
         if(detectBeep() && !before_flash){
-            flash_left = skin.getEntityMap().get("FLASH_LEFT").copy();
-            flash_right = skin.getEntityMap().get("FLASH_RIGHT").copy();
+            flash_index = flash_it.next();
+            Logger.global.log(Level.INFO, "FLASH_" + Integer.toString(flash_index));
+            // 
+            flash = skin.getEntityMap().get ("FLASH_" + Integer.toString(flash_index)).copy();
+            before_flash = true;
+            entities_matrix.add(flash);
             
-        }else if(flash_left != null){
-            flash_left = skin.getEntityMap().get("NO_FLASH_LEFT").copy();
-            flash_right = skin.getEntityMap().get("NO_FLASH_RIGHT").copy();
-        }
-        if(flash_left != null){
-        entities_matrix.add(flash_left);
-        entities_matrix.add(flash_right);
+        }else if(flash != null && before_flash && !detectBeep()){
+            
+            flash = skin.getEntityMap().get("NO_FLASH_" + Integer.toString(flash_index) ).copy();
+            before_flash = false;
+            entities_matrix.add(flash);
+
         }
     }
     
@@ -1593,6 +1618,8 @@ public class Render implements GameWindowCallback
 		}
         return "";
     }
+    
+    
     
 
     /**
