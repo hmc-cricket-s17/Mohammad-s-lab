@@ -14,8 +14,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.Map.Entry;
 import java.util.*;
 import java.util.logging.Level;
@@ -49,6 +51,8 @@ import org.open2jam.sound.SoundSystem;
 import org.open2jam.sound.SoundSystemException;
 import org.open2jam.util.*;
 import java.util.LinkedList;
+import org.open2jam.parsers.utils.ByteBufferInputStream;
+import org.open2jam.parsers.utils.ByteHelper;
 
 
 /**
@@ -1212,7 +1216,7 @@ public class Render implements GameWindowCallback
         while(buffer_iterator.hasNext() && getViewport() - distance.calculate(now_display, buffer_timer, speed, null) > -10)
         {
             Event e = buffer_iterator.next();
-
+          
             buffer_timer = e.getTime();
             
             switch(e.getChannel())
@@ -1618,6 +1622,122 @@ public class Render implements GameWindowCallback
 		}
         return "";
     }
+    
+    
+    /********************************
+     * Methods for auditory stimuli*
+     *******************************/
+    /*Load beep sound */
+    public void loadBeep()
+    {   
+        ByteBuffer buffer = 
+        SampleData beep_sound = newSampleData(new ByteBufferInputStream(buffer))
+    }
+    
+    /* play a sample */
+    public SoundInstance playBeep()
+    {
+        File file;
+        file = new File("/Users/macbookpro/Dropbox/College/Summer_2017/Mohammad_lab/Game/open2jam-Alpha_7/dist/beep.wav");
+        RandomAccessFile f;
+        ByteBuffer buffer = null;
+        
+        try {
+            f = new RandomAccessFile(file,"r");
+            buffer = f.getChannel().map(java.nio.channels.FileChannel.MapMode.READ_ONLY, 0, 56);
+            buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           
+
+           byte[] byte_name = new byte[32];
+           buffer.get(byte_name);
+	   String sample_name = ByteHelper.toString(byte_name);
+	   if(sample_name.lastIndexOf(".") < 0) sample_name += ".wav";
+
+           short audio_format = buffer.getShort();
+           short num_channels = buffer.getShort();
+           int sample_rate = buffer.getInt();
+           int bit_rate = buffer.getInt();
+           short block_align = buffer.getShort();
+           short bits_per_sample = buffer.getShort();
+           int data = buffer.getInt();
+           int chunk_size = buffer.getInt();
+
+	   
+	   SampleData.WAVHeader header = 
+		   new SampleData.WAVHeader(audio_format, num_channels, sample_rate, bit_rate, block_align, bits_per_sample, data, chunk_size);
+            SampleData beepData = new SampleData(new ByteBufferInputStream(buffer), header, sample_name);
+            Sound sound;
+        try {
+            sound = soundSystem.load(beepData);
+        } catch (SoundSystemException ex) {
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            return sound.play(soundSample.isBGM() ? SoundChannel.BGM : SoundChannel.KEY,
+                    1.0f, soundSample.pan);
+        } catch (SoundSystemException ex) {
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, "{0}", ex);
+            return null;
+        }
+    }
+    
+   
+    
+    /** Generates a tone, and assigns it to the Clip. */
+private void generateTone()
+    throws LineUnavailableException {
+    if ( clip!=null ) {
+        clip.stop();
+        clip.close();
+    } else {
+        clip = AudioSystem.getClip();
+    }
+    boolean addHarmonic = harmonic.isSelected();
+
+    int intSR = ((Integer)sampleRate.getSelectedItem()).intValue();
+    int intFPW = framesPerWavelength.getValue();
+
+    float sampleRate = (float)intSR;
+
+    // oddly, the sound does not loop well for less than
+    // around 5 or so, wavelengths
+    int wavelengths = 20;
+    byte[] buf = new byte[2*intFPW*wavelengths];
+    AudioFormat af = new AudioFormat(
+        sampleRate,
+        8,  // sample size in bits
+        2,  // channels
+        true,  // signed
+        false  // bigendian
+        );
+
+    int maxVol = 127;
+    for(int i=0; i<intFPW*wavelengths; i++){
+        double angle = ((float)(i*2)/((float)intFPW))*(Math.PI);
+        buf[i*2]=getByteValue(angle);
+        if(addHarmonic) {
+            buf[(i*2)+1]=getByteValue(2*angle);
+        } else {
+            buf[(i*2)+1] = buf[i*2];
+        }
+    }
+
+    try {
+        byte[] b = buf;
+        AudioInputStream ais = new AudioInputStream(
+            new ByteArrayInputStream(b),
+            af,
+            buf.length/2 );
+
+        clip.open( ais );
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+}
     
     
     
