@@ -98,6 +98,8 @@ public class SampleEntity extends Entity implements TimeEntity, SoundEntity
         return render.queueSample(value);
     }
     
+    
+    
     @Override
     public void draw() {}
 

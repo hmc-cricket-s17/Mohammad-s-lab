@@ -735,6 +735,7 @@ public class Render implements GameWindowCallback
 
         soundSystem.update();
 	do_autoplay(now);
+        playBeep();
         Keyboard.poll();
         check_keyboard(now);
         
@@ -1628,18 +1629,20 @@ public class Render implements GameWindowCallback
      * Methods for auditory stimuli*
      *******************************/
     /*Load beep sound */
+    /*
     public void loadBeep()
     {   
         ByteBuffer buffer = 
         SampleData beep_sound = newSampleData(new ByteBufferInputStream(buffer))
     }
+    * */
     
     /* play a sample */
     public SoundInstance playBeep()
     {
         File file;
         file = new File("/Users/macbookpro/Dropbox/College/Summer_2017/Mohammad_lab/Game/open2jam-Alpha_7/dist/beep.wav");
-        RandomAccessFile f;
+        RandomAccessFile f = null;
         ByteBuffer buffer = null;
         
         try {
@@ -1647,7 +1650,7 @@ public class Render implements GameWindowCallback
             buffer = f.getChannel().map(java.nio.channels.FileChannel.MapMode.READ_ONLY, 0, 56);
             buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, "first", ex);
         }
            
 
@@ -1668,26 +1671,48 @@ public class Render implements GameWindowCallback
 	   
 	   SampleData.WAVHeader header = 
 		   new SampleData.WAVHeader(audio_format, num_channels, sample_rate, bit_rate, block_align, bits_per_sample, data, chunk_size);
-            SampleData beepData = new SampleData(new ByteBufferInputStream(buffer), header, sample_name);
-            Sound sound;
         try {
-            sound = soundSystem.load(beepData);
-        } catch (SoundSystemException ex) {
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.INFO, String.valueOf(data));
+            buffer = f.getChannel().map(java.nio.channels.FileChannel.MapMode.READ_ONLY, 20, chunk_size);
+        } catch (IOException ex) {
             java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+           buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN);
+
+           byte[] buf = new byte[buffer.remaining()];
+           buffer.get(buf);
+
+           buffer = ByteBuffer.allocateDirect(buf.length);
+           buffer.put(buf);
+           buffer.flip();
+           
+           
+            SampleData beepData = new SampleData(new ByteBufferInputStream(buffer), header, sample_name);
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.INFO, String.valueOf(beepData == null));
+
+            Sound sound;
+            sound = null;
         try {
-            return sound.play(soundSample.isBGM() ? SoundChannel.BGM : SoundChannel.KEY,
-                    1.0f, soundSample.pan);
+            
+            sound = soundSystem.load(beepData);
+                        java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.INFO, "aaaaa");
+            SoundInstance s = sound.play(SoundChannel.BGM,
+                    10.0f, 0);
+
+            return s;
         } catch (SoundSystemException ex) {
-            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, "{0}", ex);
+            java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, "second", ex);
             return null;
         }
+        
+        
     }
     
    
     
     /** Generates a tone, and assigns it to the Clip. */
+    
+/*    
 private void generateTone()
     throws LineUnavailableException {
     if ( clip!=null ) {
@@ -1739,7 +1764,7 @@ private void generateTone()
     }
 }
     
-    
+    */
     
 
     /**
