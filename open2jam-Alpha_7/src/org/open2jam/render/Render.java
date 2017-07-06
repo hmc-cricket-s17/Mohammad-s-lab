@@ -551,7 +551,7 @@ public class Render implements GameWindowCallback
         System.gc();
 
         // wait a bit.. 5 seconds at min
-        SystemTimer.sleep((int) (5000 - (SystemTimer.getTime() - lastLoopTime)));
+        // SystemTimer.sleep((int) (5000 - (SystemTimer.getTime() - lastLoopTime)));
 
         lastLoopTime = SystemTimer.getTime();
         start_time = lastLoopTime + DELAY_TIME;
