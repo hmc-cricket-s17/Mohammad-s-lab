@@ -478,8 +478,6 @@
         <!--Flash -->
         
         <layer>
-            <entity id = "FLASH_RIGHT" x = "627" y = "50" sprite="white_circle"/>
-            <entity id = "FLASH_LEFT" x = "150" y = "50" sprite="green_circle"/>
             <entity id = "FLASH_1" x = "80" y = "50" sprite="green_circle"/>
             <entity id = "FLASH_2" x ="150" y ="150" sprite="green_circle"/>
             <entity id = "FLASH_3" x = "220" y = "220" sprite="green_circle"/>
