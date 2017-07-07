@@ -481,15 +481,15 @@
             <entity id = "FLASH_1" x = "80" y = "50" sprite="green_circle"/>
             <entity id = "FLASH_2" x ="150" y ="150" sprite="green_circle"/>
             <entity id = "FLASH_3" x = "220" y = "220" sprite="green_circle"/>
-            <entity id = "FLASH_4" x = "557" y = "50" sprite="green_circle"/>
+            <entity id = "FLASH_4" x = "557" y = "220" sprite="green_circle"/>
             <entity id = "FLASH_5" x = "627" y = "150" sprite="green_circle"/>
-            <entity id = "FLASH_6" x = "697" y = "220" sprite="green_circle"/>
+            <entity id = "FLASH_6" x = "697" y = "50" sprite="green_circle"/>
             <entity id = "NO_FLASH_1" x = "80"  y = "50"  sprite="black_box"/>
             <entity id = "NO_FLASH_2" x = "150" y = "150" sprite="black_box"/>
             <entity id = "NO_FLASH_3" x = "220" y = "220" sprite="black_box"/>
-            <entity id = "NO_FLASH_4" x = "557" y = "50" sprite="black_box"/>
+            <entity id = "NO_FLASH_4" x = "557" y = "220" sprite="black_box"/>
             <entity id = "NO_FLASH_5" x = "627" y = "150"  sprite="black_box"/>
-            <entity id = "NO_FLASH_6" x = "697" y = "220" sprite="black_box"/>
+            <entity id = "NO_FLASH_6" x = "697" y = "50" sprite="black_box"/>
         </layer>
 
     <!-- note hit effects -->

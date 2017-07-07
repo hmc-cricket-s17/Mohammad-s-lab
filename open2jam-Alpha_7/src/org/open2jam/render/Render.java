@@ -670,7 +670,7 @@ public class Render implements GameWindowCallback
         double delta = now - lastLoopTime;
         lastLoopTime = now;
         lastFpsTime += delta;
-        last_beep += delta;
+        last_beep += delta;  // How long it's been past since last beep
         fps++;
         
        
@@ -1625,7 +1625,6 @@ public class Render implements GameWindowCallback
     private void playBeep()
     {
         if(between_beep*1000 < last_beep){
-            Logger.global.log(Level.INFO, "yayaya");
             trigger("beeps.txt");
             last_beep = 0;
             if(beep_it.hasNext()){
