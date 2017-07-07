@@ -379,6 +379,12 @@
         <sprite id="counter_number_9">
             <frame x="54" y="90" w="9" h="9" file="black_BG.png" />
         </sprite>
+         <sprite id="black_box">
+            <frame x = "0" y = "0" w = "54" h = "54" file="black_BG.png"/>
+        </sprite>
+        <sprite id="green_circle">
+            <frame x = "0" y = "0" w = "54" h = "54" file="green_circle.png"/>
+        </sprite>
     </spriteset>
 
     <skin name="o2jam" keys="7" scratch="false" width="800" height="600" judgment_line="480">
@@ -467,6 +473,25 @@
 
             <entity id="PRESSED_NOTE_7" x="464"  y="487" sprite="pressed_note_keyboard_white1" />
             <entity id="PRESSED_NOTE_7" x="454"  y="528" sprite="pressed_note_keyboard_white2" />
+        </layer>
+        
+        <!--Flash -->
+        
+        <layer>
+            <entity id = "FLASH_RIGHT" x = "627" y = "50" sprite="white_circle"/>
+            <entity id = "FLASH_LEFT" x = "150" y = "50" sprite="green_circle"/>
+            <entity id = "FLASH_1" x = "80" y = "50" sprite="green_circle"/>
+            <entity id = "FLASH_2" x ="150" y ="150" sprite="green_circle"/>
+            <entity id = "FLASH_3" x = "220" y = "220" sprite="green_circle"/>
+            <entity id = "FLASH_4" x = "557" y = "50" sprite="green_circle"/>
+            <entity id = "FLASH_5" x = "627" y = "150" sprite="green_circle"/>
+            <entity id = "FLASH_6" x = "697" y = "220" sprite="green_circle"/>
+            <entity id = "NO_FLASH_1" x = "80"  y = "50"  sprite="black_box"/>
+            <entity id = "NO_FLASH_2" x = "150" y = "150" sprite="black_box"/>
+            <entity id = "NO_FLASH_3" x = "220" y = "220" sprite="black_box"/>
+            <entity id = "NO_FLASH_4" x = "557" y = "50" sprite="black_box"/>
+            <entity id = "NO_FLASH_5" x = "627" y = "150"  sprite="black_box"/>
+            <entity id = "NO_FLASH_6" x = "697" y = "220" sprite="black_box"/>
         </layer>
 
     <!-- note hit effects -->
