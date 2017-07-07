@@ -204,11 +204,20 @@ public class Render implements GameWindowCallback
 
     Entity judgment_entity;
     
+    
+    /** flashes */
     int flash_index;
     Entity flash;
     boolean before_flash;
     LinkedList<Integer> flash_vec;
     Iterator<Integer> flash_it;
+    
+    /** beeps  */
+    int between_beep;
+    double last_beep;
+    LinkedList<Integer> beep_vec;
+    Iterator<Integer> beep_it;
+    
 
     /** the combo counter */
     ComboCounterEntity combo_entity;
@@ -272,6 +281,7 @@ public class Render implements GameWindowCallback
         entities_matrix = new EntityMatrix();
         
         initFlashVec();
+        initBeep();
         this.chart = chart;
         this.opt = opt;
         
@@ -381,7 +391,7 @@ public class Render implements GameWindowCallback
     @Override
     public void initialise()
     {
-        outZero();
+        outZero("communicate.txt");
         lastLoopTime = SystemTimer.getTime();
 
         // skin load
@@ -568,7 +578,7 @@ public class Render implements GameWindowCallback
         System.gc();
 
         // wait a bit.. 5 seconds at min
-        SystemTimer.sleep((int) (5000 - (SystemTimer.getTime() - lastLoopTime)));
+        // SystemTimer.sleep((int) (5000 - (SystemTimer.getTime() - lastLoopTime)));
 
         lastLoopTime = SystemTimer.getTime();
         start_time = lastLoopTime + DELAY_TIME;
@@ -706,6 +716,7 @@ public class Render implements GameWindowCallback
         double delta = now - lastLoopTime;
         lastLoopTime = now;
         lastFpsTime += delta;
+        last_beep += delta;
         fps++;
         
        
@@ -714,8 +725,13 @@ public class Render implements GameWindowCallback
         check_misc_keyboard();
         
         changeSpeed(delta); // TODO: is everything here really needed every frame ?
-        showFlash();
         
+        Logger.global.log(Level.INFO, "::::::::::::::::::::::::::::::");
+        Logger.global.log(Level.INFO, String.valueOf(SystemTimer.getTime()));
+        flashWithBeep();
+        playBeep();
+        Logger.global.log(Level.INFO, String.valueOf(SystemTimer.getTime()));
+
         if (!gameStarted && localMatching != null) {
             if (localMatching.isReady()) gameStarted = true;
         }
@@ -735,7 +751,6 @@ public class Render implements GameWindowCallback
 
         soundSystem.update();
 	do_autoplay(now);
-        playBeep();
         Keyboard.poll();
         check_keyboard(now);
         
@@ -960,7 +975,7 @@ public class Render implements GameWindowCallback
                     setNoteJudgment(ne, JudgmentResult.MISS);
                     hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
-                    trigger();
+                    trigger("communicate.txt");
                     
                     
                 }
@@ -1509,38 +1524,38 @@ public class Render implements GameWindowCallback
      * Methods to communicate with Matlab
      */
     
-    private void trigger(){
+    private void trigger(String file){
           
-        outOne();
+        outOne(file);
         try {
             Thread.sleep(3);
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
         }
-        outZero();
+        outZero(file);
         
     }
     
     // Set the value of communicate.txt to 0
-    private void outZero(){
-        outNum('0');
+    private void outZero(String file){
+        outNum('0', file);
     }
     
     // Set the value of communicate.txt to 1
-    private void outOne(){
-        outNum('1');
+    private void outOne(String file){
+        outNum('1', file);
     }
     
-    private void outNum(char x){
-        PrintWriter writer = openFile();
+    private void outNum(char x, String file){
+        PrintWriter writer = openFile(file);
         writer.print(x);
         writer.close();
     }
     
-    private PrintWriter openFile(){
+    private PrintWriter openFile(String file){
         PrintWriter writer = null;           
         try {
-            writer = new PrintWriter("communicate.txt","UTF-8");
+            writer = new PrintWriter(file,"UTF-8");
         } catch (FileNotFoundException ex) {
             java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {
@@ -1560,7 +1575,30 @@ public class Render implements GameWindowCallback
         
     }
     
+    private void flashWithBeep(){
+        if(between_beep*1000 < last_beep){
+            showFlash();
+        }else if(before_flash){
+            hideFlash();
+        }
+    }
     
+    private void showFlash(){
+            flash_index = flash_it.next();
+            flash = skin.getEntityMap().get ("FLASH_" + Integer.toString(flash_index)).copy();
+            before_flash = true;
+            entities_matrix.add(flash);
+    }
+    
+    private void hideFlash(){
+        flash = skin.getEntityMap().get("NO_FLASH_" + Integer.toString(flash_index) ).copy();
+        before_flash = false;
+        entities_matrix.add(flash);
+    }
+
+
+    
+    /* old
     private void showFlash(){
         if(detectBeep() && !before_flash){
             flash_index = flash_it.next();
@@ -1578,6 +1616,7 @@ public class Render implements GameWindowCallback
 
         }
     }
+    */
     
     private boolean detectBeep(){
         return "1".equals(readFromMat("beeps.txt"));
@@ -1628,6 +1667,35 @@ public class Render implements GameWindowCallback
     /********************************
      * Methods for auditory stimuli*
      *******************************/
+    /**
+     * Initialize the location vector of the flash
+     */
+    private void initBeep(){
+        Integer[] beep_list = new Integer[]{2,2,3,4,5,6,1,2,3,4,5,6,1,2, 3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6};
+        beep_vec = new java.util.LinkedList<Integer>(Arrays.asList(beep_list));
+        beep_it = flash_vec.iterator();
+        between_beep = beep_it.next();
+        last_beep = 0;
+        
+    }
+    
+    /* to communicate with Matlab */
+    private void playBeep()
+    {
+        if(between_beep*1000 < last_beep){
+            Logger.global.log(Level.INFO, "yayaya");
+            trigger("beeps.txt");
+            last_beep = 0;
+            if(beep_it.hasNext()){
+                between_beep = beep_it.next();
+            }else{
+                between_beep = 999;
+            }     
+        }   
+            
+    }
+    
+    
     /*Load beep sound */
     /*
     public void loadBeep()
@@ -1638,6 +1706,7 @@ public class Render implements GameWindowCallback
     * */
     
     /* play a sample */
+    /*
     public SoundInstance playBeep()
     {
         File file;
@@ -1708,7 +1777,7 @@ public class Render implements GameWindowCallback
         
     }
     
-   
+   */
     
     /** Generates a tone, and assigns it to the Clip. */
     
@@ -1780,7 +1849,7 @@ private void generateTone()
                 @Override
                 public void run() {
                     autosyncCallback.autosyncFinished(syncingLatency.getLatency());
-                }
+                } 
             });
         }
     }
