@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_65" class="java.beans.XMLDecoder"> 
+ <object class="org.open2jam.GameOptions"> 
+  <void property="BGMVolume"> 
+   <float>0.22</float> 
+  </void> 
+  <void property="displayBitsPerPixel"> 
+   <int>32</int> 
+  </void> 
+  <void property="displayHeight"> 
+   <int>800</int> 
+  </void> 
+  <void property="displayWidth"> 
+   <int>1280</int> 
+  </void> 
+  <void property="keyVolume"> 
+   <float>0.22</float> 
+  </void> 
+  <void property="masterVolume"> 
+   <float>0.22</float> 
+  </void> 
+ </object> 
+</java> 

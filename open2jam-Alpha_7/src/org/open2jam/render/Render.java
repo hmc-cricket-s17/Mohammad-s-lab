@@ -654,8 +654,16 @@ public class Render implements GameWindowCallback
         hit_data.close();
 
     }
-
-
+    
+    
+    /**
+    * play the music for first 30 seconds
+    */
+    @Override
+    public void playMusic()
+    {
+        
+    }
     /**
     * Notification that a frame is being rendered. Responsible for
     * running game logic and rendering the scene.
@@ -938,7 +946,13 @@ public class Render implements GameWindowCallback
                     setNoteJudgment(ne, JudgmentResult.MISS);
                     hit_data.println(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
-                    trigger("communicate.txt");
+                    switch (ne.getChannel())
+                     {
+                         case NOTE_1: case NOTE_2: case NOTE_3:
+                             trigger("communicate.txt", '2');
+                         case NOTE_5: case NOTE_6: case NOTE_7:
+                             trigger("communicate.txt", '3');
+                     }
                 }
                 break;
                 
@@ -1487,16 +1501,19 @@ public class Render implements GameWindowCallback
     /**
      * Methods to communicate with Matlab
      */
-    
-    private void trigger(String file){
-          
-        outOne(file);
+    private void trigger(String file, char output)
+    {
+        outNum(output,file);
         try {
             Thread.sleep(3);
         } catch (InterruptedException ex) {
             java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, null, ex);
         }
         outZero(file);
+    }
+    
+    private void trigger(String file){
+          trigger(file,'1');
         
     }
     
