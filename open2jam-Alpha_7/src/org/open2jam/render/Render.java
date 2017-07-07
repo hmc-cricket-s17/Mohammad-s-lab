@@ -1213,7 +1213,7 @@ public class Render implements GameWindowCallback
                 break;
                     
                 case NOTE_1:case NOTE_2:
-                case NOTE_3:case NOTE_4:
+                case NOTE_3:
                 case NOTE_5:case NOTE_6:case NOTE_7:
                 if(e.getFlag() == Event.Flag.NONE){
 		    if(ln_buffer.containsKey(e.getChannel()))
