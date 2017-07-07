@@ -195,7 +195,21 @@ public class LWJGLGameWindow implements GameWindow {
 	private void gameLoop()
         {
             gameRunning = true;
-            while (gameRunning) {
+            while(true){
+                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+                    GL11.glLoadIdentity();
+                    
+                    GL11.glScalef(scale_x, scale_y, 1);
+                    callback.playMusic();
+                    callback.frameRendering();
+                    
+                    Display.update();
+                    
+                    if(Display.isCloseRequested() || Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                            destroy();
+                    }
+            }
+            /*while (gameRunning) {
                     // clear screen
                     GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
                     GL11.glLoadIdentity();
@@ -209,7 +223,7 @@ public class LWJGLGameWindow implements GameWindow {
                             destroy();
                     }
             }
-            Display.destroy();
+            Display.destroy(); */
 	}
 
     public void destroy() {

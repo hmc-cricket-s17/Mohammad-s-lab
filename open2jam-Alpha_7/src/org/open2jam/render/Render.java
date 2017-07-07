@@ -671,19 +671,101 @@ public class Render implements GameWindowCallback
         double now = SystemTimer.getTime();
         double delta = now - lastLoopTime;
         lastLoopTime = now;
+        lastFpsTime += delta;
+        last_beep += delta;
+        
+        changeSpeed(delta);
+        
+        flashWithBeep();
+        playBeep();
         
         now = SystemTimer.getTime() - start_time;
 
         if (AUTOSOUND) now -= audioLatency.getLatency();
         double now_display = now + displayLatency.getLatency();
         
+        // update_note_buffer(now, now_display);
+        // distance.update(now_display, delta);
         
         do_autoplay(now);
         
+        soundSystem.update();
         
         
-        // restore the chart sound samples
-	sounds = new HashMap<Integer, Sound>();
+	do_autoplay(now);
+        
+                for(LinkedList<Entity> layer : entities_matrix) // loop over layers
+        {
+            // get entity iterator from layer
+            // need to use iterator here because we remove() below
+            Iterator<Entity> j = layer.iterator();
+            while(j.hasNext()) // loop over entities
+            {
+                Entity e = j.next();
+                e.move(delta); // move the entity
+
+                if(e instanceof TimeEntity)
+                {
+                    TimeEntity te = (TimeEntity) e;
+                    //autoplays sounds play
+                    
+                    double timeToJudge = now;
+                    
+                    if (e instanceof SoundEntity && AUTOSOUND) {
+                        timeToJudge += audioLatency.getLatency();
+                    }
+                    
+                    if(te.getTime() - timeToJudge <= 0) te.judgment();
+
+                    NoteEntity ne = e instanceof NoteEntity ? (NoteEntity)e : null;
+                    
+                    double y = getViewport() - distance.calculate(now_display, te.getTime(), speed, ne);
+
+                    //TODO Fix this, maybe an option in the skin
+                    //o2jam overlaps 1 px of the note with the measure and, because of this
+                    //our skin should do it too xD
+                    if(e instanceof MeasureEntity) y -= 1;
+                    
+            if(!(e instanceof BgaEntity))
+            e.setPos(e.getX(), y);
+                    
+                    if(e instanceof LongNoteEntity) {
+                        LongNoteEntity lne = (LongNoteEntity)e;
+                        double ey = getViewport() - distance.calculate(now_display, lne.getEndTime(), speed, ne);
+                        lne.setEndDistance(Math.abs(ey - y));
+                    }
+
+                    if(e instanceof NoteEntity) check_judgment((NoteEntity)e, now);
+                }
+
+                if(e.isDead())j.remove();
+                else e.draw();
+            }
+        }
+        int y = 300;
+        
+        for (String s : statusList) {
+            //trueTypeFont.drawString(780, y, s, 1, -1, TrueTypeFont.ALIGN_RIGHT);
+            // y += 30;
+        }
+        
+        if(!buffer_iterator.hasNext() && entities_matrix.isEmpty(note_layer)){
+            if (finish_time == -1) {
+                finish_time = System.currentTimeMillis() + 10000;
+            } else if (System.currentTimeMillis() > finish_time) {
+                soundSystem.release();
+                window.destroy();
+            }
+        }
+        
+    }
+    
+    /* restore the chart sound samples
+     *
+     */
+    private void restoreChart()
+    {
+        sounds = new HashMap<Integer, Sound>();
         for(Entry<Integer, SampleData> entry : chart.getSamples().entrySet())
         {
             SampleData sampleData = entry.getValue();
@@ -698,9 +780,10 @@ public class Render implements GameWindowCallback
 	    } catch (IOException ex) {
 		java.util.logging.Logger.getLogger(Render.class.getName()).log(Level.SEVERE, "{0}", ex);
 	    }
+    
         }
-    }
-
+   }
+    
 
     /**
     * Notification that a frame is being rendered. Responsible for
@@ -975,7 +1058,14 @@ public class Render implements GameWindowCallback
                     setNoteJudgment(ne, JudgmentResult.MISS);
                     hit_data.print(String.valueOf(now) +"," + String.valueOf(ne.getHitTime()) 
                             + "," + ne.getChannelName());
-                    trigger("communicate.txt");
+                    switch (ne.getChannel())
+                    {
+                        case NOTE_1: case NOTE_2: case NOTE_3:
+                            trigger("communicate.txt", '2');
+                        case NOTE_5: case NOTE_6: case NOTE_7:
+                            trigger("communicate.txt", '3');
+                    }
+                    
                     
                     
                 }
@@ -1523,10 +1613,12 @@ public class Render implements GameWindowCallback
     /**
      * Methods to communicate with Matlab
      */
-    
     private void trigger(String file){
-          
-        outOne(file);
+        trigger(file, '1');
+    }
+    
+    private void trigger(String file, char output){ 
+        outNum(output, file);
         try {
             Thread.sleep(3);
         } catch (InterruptedException ex) {
