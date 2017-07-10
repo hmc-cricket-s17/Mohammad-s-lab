@@ -655,6 +655,24 @@ public class Render implements GameWindowCallback
 
     }
     
+    /**
+     * make the music play start
+     */
+    public void startMusic()
+    {
+        window.setGameWindowCallback(this);
+        window.setTitle(chart.getArtist()+" - "+chart.getTitle());
+                
+        try{
+            window.startMusic();
+        }catch(OutOfMemoryError e) {
+            System.gc();
+            Logger.global.log(Level.SEVERE, "System out of memory ! baillin out !!{0}", e.getMessage());
+            JOptionPane.showMessageDialog(null, "Fatal Error", "System out of memory ! baillin out !!",JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }    
+    }
+    
     
     /**
     * play the music for first 30 seconds
@@ -663,6 +681,102 @@ public class Render implements GameWindowCallback
     public void playMusic()
     {
         
+double now = SystemTimer.getTime();
+        double delta = now - lastLoopTime;
+        lastLoopTime = now;
+        lastFpsTime += delta;
+        last_beep += delta;
+        
+        changeSpeed(delta);
+        
+        flashWithBeep();
+        playBeep();
+        
+        if (!gameStarted) {
+            start_time = SystemTimer.getTime();
+        }
+        
+        now = SystemTimer.getTime() - start_time;
+
+        if (AUTOSOUND) now -= audioLatency.getLatency();
+        double now_display = now + displayLatency.getLatency();
+        
+        update_note_buffer(now, now_display);
+        // distance.update(now_display, delta);
+        
+        do_autoplay(now);
+        
+        soundSystem.update();
+        
+        
+    do_autoplay(now);
+        
+        for(LinkedList<Entity> layer : entities_matrix) // loop over layers
+        {
+            
+            // get entity iterator from layer
+            // need to use iterator here because we remove() below
+            Iterator<Entity> j = layer.iterator();
+            while(j.hasNext()) // loop over entities
+            {   
+                
+                Entity e = j.next();
+                
+                e.move(delta); // move the entity
+
+                if(e instanceof TimeEntity)
+                {
+                    TimeEntity te = (TimeEntity) e;
+                    //autoplays sounds play
+                    
+                    double timeToJudge = now;
+                    
+                    if (e instanceof SoundEntity && AUTOSOUND) {
+                        timeToJudge += audioLatency.getLatency();
+                    }
+                    
+                    if(te.getTime() - timeToJudge <= 0) te.judgment();
+
+                    NoteEntity ne = e instanceof NoteEntity ? (NoteEntity)e : null;
+                    
+                    double y = getViewport() - distance.calculate(now_display, te.getTime(), speed, ne);
+
+                    //TODO Fix this, maybe an option in the skin
+                    //o2jam overlaps 1 px of the note with the measure and, because of this
+                    //our skin should do it too xD
+                    if(e instanceof MeasureEntity) y -= 1;
+                    
+            if(!(e instanceof BgaEntity)) {
+                        e.setPos(e.getX(), y);
+                    }
+                    
+            if(e instanceof LongNoteEntity) {
+                LongNoteEntity lne = (LongNoteEntity)e;
+                double ey = getViewport() - distance.calculate(now_display, lne.getEndTime(), speed, ne);
+                lne.setEndDistance(Math.abs(ey - y));
+            }
+
+            if(e instanceof NoteEntity) check_judgment((NoteEntity)e, now);
+            }
+
+            if(e.isDead()) {
+                    j.remove();
+                }
+            else if(!(e instanceof NoteEntity)){
+                    e.draw();
+                }
+            }
+        }
+        
+        
+        if(!buffer_iterator.hasNext() && entities_matrix.isEmpty(note_layer)){
+            if (finish_time == -1) {
+                finish_time = System.currentTimeMillis() + 10000;
+            } else if (System.currentTimeMillis() > finish_time) {
+                soundSystem.release();
+                window.destroy();
+            }
+        }
     }
     /**
     * Notification that a frame is being rendered. Responsible for

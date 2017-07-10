@@ -11,9 +11,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -52,13 +56,17 @@ public class MusicSelection extends javax.swing.JPanel
 
         Container c;
         Render r;
-        public RenderThread(Container c, Render r) {
+        Render rr;
+        public RenderThread(Container c, Render r, Render rr) {
             this.c = c;
             this.r = r;
+            this.rr = rr;
+
         }
         @Override
         public void run() {
             c.setEnabled(false);
+            rr.startMusic();
             r.startRendering();
             c.setEnabled(true);
         }
@@ -1038,6 +1046,7 @@ public class MusicSelection extends javax.swing.JPanel
 }//GEN-LAST:event_jc_custom_size_clicked
 
     private void bt_playActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_playActionPerformed
+        Render r = null;
         try {
             if(selected_header == null) return;
             
@@ -1118,7 +1127,7 @@ public class MusicSelection extends javax.swing.JPanel
 
             NativeLibrary.addSearchPath("vlc", go.getVLCLibraryPath());
             
-            final Render r;
+            
             r = new Render(selected_header, go, dm);
             
             if (cb_startPaused.isSelected()) {
@@ -1167,17 +1176,157 @@ public class MusicSelection extends javax.swing.JPanel
                     ? new TimeJudgment()
                     : new BeatJudgment());
             PrintWriter writer = createOutputFile();
-            
             r.setHit_data(writer);
-            new RenderThread(this.getTopLevelAncestor(), r).start();
+            
             
         } catch (SoundSystemException ex) {
             java.util.logging.Logger.getLogger(MusicSelection.class.getName()).log(Level.SEVERE, "{0}", ex);
         }
+        Render rr = initRender();
+        new RenderThread(this.getTopLevelAncestor(), r, rr).start();
         
         
 }//GEN-LAST:event_bt_playActionPerformed
 
+    private Render initRender(){
+        Render r = null;
+        try {
+            if(selected_header == null) return null;
+            
+            
+            final double hispeed = (Double) js_hispeed.getValue();
+
+            final DisplayMode dm;
+            if(jc_custom_size.isSelected()){ // custom size selected
+                int w,h;
+                try{
+                    w = Integer.parseInt(txt_res_width.getText());
+                    h = Integer.parseInt(txt_res_height.getText());
+                }catch(Exception e){
+                    JOptionPane.showMessageDialog(this, "Invalid value on custom size", "Error", JOptionPane.WARNING_MESSAGE);
+                    return null;
+                }
+                dm = new DisplayMode(w,h);
+            }else{
+                dm = (DisplayMode) combo_displays.getSelectedItem();
+            }
+            
+            final boolean vsync = jc_vsync.isSelected();
+            boolean fs = jc_full_screen.isSelected();
+
+            final boolean autoplay = jc_autoplay.isSelected();
+            final boolean autosound = jc_autosound.isSelected();
+
+            final boolean time_judgment = jc_timed_judgment.isSelected();
+
+            final SpeedType speed_type =(SpeedType) combo_speedType.getSelectedItem();
+
+            final ChannelMod channelModifier = (ChannelMod) combo_channelModifier.getSelectedItem();
+            final VisibilityMod visibilityModifier = (VisibilityMod) combo_visibilityModifier.getSelectedItem();
+
+            final float mainVol = slider_main_vol.getValue() / 100f;
+            final float keyVol = slider_key_vol.getValue() / 100f;
+            final float bgmVol = slider_bgm_vol.getValue() / 100f;
+
+
+            if(!dm.isFullscreenCapable() && fs) {
+                String str = "This monitor can't support the selected resolution.\n"
+                        + "Do you want to play it in windowed mode?";
+                if(JOptionPane.showConfirmDialog(this, str, "Warning",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE)
+                        == JOptionPane.YES_OPTION)
+                    fs = false;
+            }
+
+            final GameOptions go = Config.getGameOptions();
+            go.setAutoplay(autoplay);
+            go.setAutosound(autosound);
+            go.setChannelModifier(channelModifier);
+            go.setVisibilityModifier(visibilityModifier);
+            go.setMasterVolume(mainVol);
+            go.setKeyVolume(keyVol);
+            go.setBGMVolume(bgmVol);
+            go.setSpeedMultiplier(hispeed);
+            go.setSpeedType(speed_type);
+            go.setDisplayFullscreen(fs);
+            go.setDisplayVsync(vsync);
+            go.setJudgmentType(jc_timed_judgment.isSelected() ? GameOptions.JudgmentType.TimeJudgment : GameOptions.JudgmentType.BeatJudgment);
+            
+            System.out.println(go.isAutoplay());
+            
+            try{
+                go.setDisplayLag(Double.parseDouble(txt_displayLag.getText()));
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this, "Invalid display lag value", "Error", JOptionPane.WARNING_MESSAGE);
+                return null;
+            }
+            
+            try{
+                go.setAudioLatency(Double.parseDouble(txt_audioLatency.getText()));
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(this, "Invalid audio latency value", "Error", JOptionPane.WARNING_MESSAGE);
+                return null;
+            }
+
+            NativeLibrary.addSearchPath("vlc", go.getVLCLibraryPath());
+            
+            
+            r = new Render(selected_header, go, dm);
+            
+            if (cb_startPaused.isSelected()) {
+                r.setStartPaused();
+            }
+            
+            if (cb_autoSyncDisplay.isSelected()) {
+                r.setAutosyncDisplay();
+                r.setAutosyncCallback(new Render.AutosyncCallback() {
+
+                    @Override
+                    public void autosyncFinished(double displayLag) {
+                        if (JOptionPane.showConfirmDialog(MusicSelection.this, "This display latency has changed from\n"
+                                + go.getDisplayLag() + "\nto\n" + displayLag + "\n\nSave this change?",
+                                "Save Display Latency", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            go.setDisplayLag(displayLag);
+                            txt_displayLag.setText(displayLag + "");
+                            cb_autoSyncDisplay.setSelected(false);
+                        }
+                    }
+                });
+            }
+            
+            else if (cb_autoSyncAudio.isSelected()) {
+                r.setAutosyncAudio();
+                r.setAutosyncCallback(new Render.AutosyncCallback() {
+
+                    @Override
+                    public void autosyncFinished(double audioLatency) {
+                        if (JOptionPane.showConfirmDialog(MusicSelection.this, "This audio latency has changed from\n"
+                                + go.getAudioLatency() + "\nto\n" + audioLatency + "\n\nSave this change?",
+                                "Save Audio Latency", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            go.setAudioLatency(audioLatency);
+                            txt_audioLatency.setText(audioLatency + "");
+                            cb_autoSyncAudio.setSelected(false);
+                        }
+                    }
+                });
+            }
+            
+            r.setLocalMatchingServer(txtLocalMatchingServer.getText());
+            
+            r.setRank(rank);
+            
+            r.setJudge(jc_timed_judgment.isSelected()
+                    ? new TimeJudgment()
+                    : new BeatJudgment());
+            PrintWriter writer = createOutputFile();
+            r.setHit_data(writer);
+            
+            
+        } catch (SoundSystemException ex) {
+            java.util.logging.Logger.getLogger(MusicSelection.class.getName()).log(Level.SEVERE, "{0}", ex);
+        }
+        return r;
+    }
     public void setRank(int rank) {
         this.rank = rank;
         

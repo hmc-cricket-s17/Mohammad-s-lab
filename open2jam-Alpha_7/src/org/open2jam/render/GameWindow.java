@@ -58,4 +58,6 @@ public interface GameWindow {
 
         /** manually update the screen */
         public void update();
+
+        public void startMusic();
 }

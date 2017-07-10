@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import org.open2jam.render.GameWindow;
 import org.open2jam.render.GameWindowCallback;
 import org.open2jam.util.Logger;
+import org.open2jam.util.SystemTimer;
 
 /**
  * An implementation of GameWindow that will use OPENGL (JOGL) to 
@@ -104,6 +105,18 @@ public class LWJGLGameWindow implements GameWindow {
 	 */
 	public void startRendering()
         {
+            renderingHelper();
+            gameLoop();
+	}
+        
+        public void startMusic()
+        {
+            renderingHelper();
+            musicLoop();
+        }
+        
+        private void renderingHelper()
+        {
             if(callback == null)throw new RuntimeException(" Need callback to start rendering !");
 
             try {
@@ -153,9 +166,7 @@ public class LWJGLGameWindow implements GameWindow {
             GL11.glLoadIdentity();
 
             callback.initialise();
-
-            gameLoop();
-	}
+        }
 
         public void update(){
             Display.update();
@@ -194,6 +205,7 @@ public class LWJGLGameWindow implements GameWindow {
 	 */
 	private void gameLoop()
         {
+            double now = SystemTimer.getTime();
             gameRunning = true;
             while (gameRunning) {
                     // clear screen
@@ -211,6 +223,24 @@ public class LWJGLGameWindow implements GameWindow {
             }
             Display.destroy();
 	}
+        private void musicLoop()
+        {
+            double now = SystemTimer.getTime();
+            while(SystemTimer.getTime() - now < 15000){
+                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+                    GL11.glLoadIdentity();
+                    
+                    GL11.glScalef(scale_x, scale_y, 1);
+                    callback.playMusic();
+
+                    Display.update();
+                    
+                    if(Display.isCloseRequested() || Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                            destroy();
+                    }
+            }
+            Display.destroy();
+        }
 
     public void destroy() {
         gameRunning = false;
