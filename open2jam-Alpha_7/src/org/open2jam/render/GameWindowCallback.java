@@ -25,4 +25,6 @@ public interface GameWindowCallback {
 	public void windowClosed();
 
         public void playMusic();
+
+    public void notifyStart();
 }

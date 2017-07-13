@@ -385,6 +385,12 @@
         <sprite id="green_circle">
             <frame x = "0" y = "0" w = "54" h = "54" file="green_circle.png"/>
         </sprite>
+        <sprite id="fixation">
+            <frame x = "0" y = "0" w = "30" h = "30" file="fixation.png"/>
+        </sprite>
+        <sprite id="begin">
+            <frame x = "0" y = "0" w = "750" h = "258" file="begin.png"/>
+        </sprite>
     </spriteset>
 
     <skin name="o2jam" keys="7" scratch="false" width="800" height="600" judgment_line="480">
@@ -490,6 +496,11 @@
             <entity id = "NO_FLASH_4" x = "557" y = "220" sprite="black_box"/>
             <entity id = "NO_FLASH_5" x = "627" y = "150"  sprite="black_box"/>
             <entity id = "NO_FLASH_6" x = "697" y = "50" sprite="black_box"/>
+        </layer>
+        <!-- fixation point -->
+        <layer>
+            <entity id = "FIXATION" x = "385" y = "330" sprite="fixation"/>
+            <entity id = "START" x = "0" y ="0" sprite="begin"/>
         </layer>
 
     <!-- note hit effects -->

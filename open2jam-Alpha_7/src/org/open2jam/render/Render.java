@@ -215,6 +215,7 @@ public class Render implements GameWindowCallback
     boolean before_flash;
     LinkedList<Integer> flash_vec;
     Iterator<Integer> flash_it;
+    int frame_flash;
     
     /** beeps  */
     int between_beep;
@@ -644,6 +645,7 @@ public class Render implements GameWindowCallback
         window.setTitle(chart.getArtist()+" - "+chart.getTitle());
                 
         try{
+            trigger("communicate.txt", '2');
             window.startRendering();
         }catch(OutOfMemoryError e) {
             System.gc();
@@ -664,6 +666,7 @@ public class Render implements GameWindowCallback
         window.setTitle(chart.getArtist()+" - "+chart.getTitle());
                 
         try{
+            trigger("communicate.txt", '3');
             window.startMusic();
         }catch(OutOfMemoryError e) {
             System.gc();
@@ -680,8 +683,7 @@ public class Render implements GameWindowCallback
     @Override
     public void playMusic()
     {
-        
-double now = SystemTimer.getTime();
+        double now = SystemTimer.getTime();
         double delta = now - lastLoopTime;
         lastLoopTime = now;
         lastFpsTime += delta;
@@ -768,7 +770,8 @@ double now = SystemTimer.getTime();
             }
         }
         
-        
+        showFixation();
+     
         if(!buffer_iterator.hasNext() && entities_matrix.isEmpty(note_layer)){
             if (finish_time == -1) {
                 finish_time = System.currentTimeMillis() + 10000;
@@ -778,6 +781,16 @@ double now = SystemTimer.getTime();
             }
         }
     }
+    
+    /*
+     * Notify taht the game starts
+     */
+    public void notifyStart()
+    {
+        Entity startNote = flash = skin.getEntityMap().get("START" ).copy();
+        startNote.draw();
+    }
+    
     /**
     * Notification that a frame is being rendered. Responsible for
     * running game logic and rendering the scene.
@@ -890,6 +903,7 @@ double now = SystemTimer.getTime();
             if (finish_time == -1) {
                 finish_time = System.currentTimeMillis() + 10000;
             } else if (System.currentTimeMillis() > finish_time) {
+                trigger("communicate.txt",'4');
                 soundSystem.release();
                 window.destroy();
             }
@@ -1661,21 +1675,32 @@ double now = SystemTimer.getTime();
     
     /**
      * Initialize the location vector of the flash
+     * Edit the number of frame_flash to show longer or shorter flash
      */
     private void initFlashVec(){
         Integer[] flash_list = new Integer[]{2,2,3,4,5,6,1,2,3,4,5,6,1,2, 3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6};
         flash_vec = new java.util.LinkedList<Integer>(Arrays.asList(flash_list));
         flash_it = flash_vec.iterator();
-        
+        frame_flash = 3;
         
     }
     
+    
     private void flashWithBeep(){
+
+        int num_flash_frame = 3; // How many frames you want to show the flash
+
         if(between_beep*1000 < last_beep){
             showFlash();
-        }else if(before_flash){
-            hideFlash();
+            frame_flash --;
+        }else if(frame_flash != num_flash_frame){
+            frame_flash--;
         }
+        if(frame_flash == 0){
+            hideFlash()
+;           frame_flash = num_flash_frame;
+        }
+        
     }
     
     private void showFlash(){
@@ -1741,7 +1766,7 @@ double now = SystemTimer.getTime();
      * Methods for auditory stimuli*
      *******************************/
     /**
-     * Initialize the location vector of the flash
+     * Initialize the time between each beep
      */
     private void initBeep(){
         Integer[] beep_list = new Integer[]{2,2,3,4,5,6,1,2,3,4,5,6,1,2, 3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6};
@@ -1756,7 +1781,7 @@ double now = SystemTimer.getTime();
     private void playBeep()
     {
         if(between_beep*1000 < last_beep){
-            trigger("beeps.txt");
+            trigger("beeps.txt", (char) flash_index);
             last_beep = 0;
             if(beep_it.hasNext()){
                 between_beep = beep_it.next();
@@ -1767,9 +1792,21 @@ double now = SystemTimer.getTime();
             
     }
 
+     /*********************
+     * Show fixation point*
+     **********************/
     
+    /**
+     * Show fixation point
+     */
+    private void showFixation(){
+        Entity fixation = skin.getEntityMap().get("FIXATION").copy();
+        entities_matrix.add(fixation);
+    }
     
-    
+    /**
+     * Setter for hit_data
+     */
     public void setHit_data(PrintWriter writer){
         this.hit_data = writer;
 

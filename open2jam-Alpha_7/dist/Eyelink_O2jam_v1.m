@@ -14,6 +14,8 @@
 
 clear all
 
+!java -jar open2jam.jar &
+
 %%  SETTINGS
 screenNum = max(Screen('Screens')); %runs experiment on external monitor if available.  If not, falls back to main screen.
 
@@ -102,7 +104,7 @@ beep = '0';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-miss = '0';
+communicate = '0';
 % 
 % daqInd=DaqDeviceIndex;  %Scans USB-HID device list, returns index number for the USB DAQ.
 % HIDDevices=PsychHID('Devices');    %not generally used, but good for debugging if device is not found by DaqDeviceIndex.m
@@ -111,7 +113,9 @@ miss = '0';
 % DaqDConfigPort(daqInd(1),1,0); % same for B
 % DaqDOut(daqInd(1),0,0);	%set A and B to zero
 % DaqDOut(daqInd(1),1,0);
-
+game_end_trigger = 20;
+music_start_trigger = 19;
+game_start_trigger = 18;
 right_miss_trigger = 8;
 left_miss_trigger = 7;
 beep_trigger = 17;
@@ -122,6 +126,7 @@ right_miss_num = '3';
   
 
 %% RUN TRIALS
+%% You know, I need to make this more modular
 
 for trialNum = 1:numTrials
     %Eyelink drift correct
@@ -130,6 +135,7 @@ for trialNum = 1:numTrials
     %Start writing data
     Eyelink('StartRecording');
     Screen('Close',win0.ptr);
+    
 	
     %Normally you'd show your stimulus here, but as placeholder we'll just
     %wait for trial duration.
@@ -144,36 +150,49 @@ for trialNum = 1:numTrials
 	while  toc < trialDuration 
 		f_miss = fopen('communicate.txt');
 		f_beep = fopen('beeps.txt');
-		miss = fgets(f_miss);
+		communicate = fgets(f_miss);
 		beep = fgets(f_beep);
 		fclose(f_miss);
 		fclose(f_beep);
-
-		%% Do miss triggering
-		if miss == left_miss_num && left_flag == false
+        %% I know it's a bad practice, but I am using 
+        % miss for trigger of game start
+		% Do miss triggering
+        if communicate == '2'
+    %         DaqDOut(daqInd(1),portNum,game_start_trigger);
+    %         DaqDOut(daqInd(1),portNum,0);
+            Eyelink('Message', 'Start Game');
+        elseif communicate == '3'
+    %         DaqDOut(daqInd(1),portNum,music_start_trigger);
+    %         DaqDOut(daqInd(1),portNum,0);
+            Eyelink('Message', 'Start Music');
+        elseif communicate = '4'
+    %         DaqDOut(daqInd(1),portNum,game_end_trigger);
+    %         DaqDOut(daqInd(1),portNum,0);
+            Eyelink('Message', 'End of the Game');    
+        elseif communicate == left_miss_num && left_flag == false
 	%         DaqDOut(daqInd(1),portNum,left_miss_trigger);
 	%         DaqDOut(daqInd(1),portNum,0);
-
 			left_flag = true;
-        elseif miss == right_miss_num && right_flag == false
+        elseif communicate == right_miss_num && right_flag == false
     %         DaqDOut(daqInd(1),portNum,right_miss_trigger);
 	%         DaqDOut(daqInd(1),portNum,0);
             right_flag = true;
-        elseif miss =='0' 
+        elseif communicate =='0' 
             left_flag = false;
             right_flag = false;
 		end
 
 		%% Do beep
-		if beep == '1' && beep_flag == false        
+        if beep == '0' && beep_flag == true
+            beep_flag = false;
+        elseif beep_flag == false
 			%DaqDOut(daqInd(1),portNum,beep_trigger);
 			%DaqDOut(daqInd(1),portNum,0);
 			PsychPortAudio('Start', pahandle, repetitions, startCue, waitForDeviceStart);
 			WaitSecs(beepLengthSecs);
 			PsychPortAudio('Stop', pahandle);
 			beep_flag = true;
-		elseif beep == '0' && beep_flag == true
-			beep_flag = false;
+            Eyelink('Message', strcat('Flash at',beep));
 		end
 	end
 

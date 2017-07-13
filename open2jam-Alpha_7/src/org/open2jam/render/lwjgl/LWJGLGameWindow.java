@@ -207,6 +207,9 @@ public class LWJGLGameWindow implements GameWindow {
         {
             double now = SystemTimer.getTime();
             gameRunning = true;
+            callback.notifyStart();
+            Display.update();
+            SystemTimer.sleep(3000);
             while (gameRunning) {
                     // clear screen
                     GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
@@ -226,7 +229,7 @@ public class LWJGLGameWindow implements GameWindow {
         private void musicLoop()
         {
             double now = SystemTimer.getTime();
-            while(SystemTimer.getTime() - now < 15000){
+            while(SystemTimer.getTime() - now < 5000){
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
                     GL11.glLoadIdentity();
                     
